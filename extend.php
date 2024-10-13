@@ -12,13 +12,20 @@
 namespace RetechVN\MediatedTransaction;
 
 use Flarum\Extend;
+use Flarum\Api\Serializer\UserSerializer;
 
 return [
     (new Extend\Frontend('forum'))
-        ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/less/forum.less'),
+        ->js(__DIR__ . '/js/dist/forum.js')
+        ->css(__DIR__ . '/less/forum.less')
+        ->route('/giao-dich-trung-gian', 'retechvn/mediated-transaction'),
     (new Extend\Frontend('admin'))
-        ->js(__DIR__.'/js/dist/admin.js')
-        ->css(__DIR__.'/less/admin.less'),
-    new Extend\Locales(__DIR__.'/locale'),
+        ->js(__DIR__ . '/js/dist/admin.js')
+        ->css(__DIR__ . '/less/admin.less'),
+    new Extend\Locales(__DIR__ . '/locale'),
+    (new Extend\ApiSerializer(UserSerializer::class))
+        ->attribute('rvn_point', function (UserSerializer $serializer, $user, $attributes) {
+            return $user->rvn_point;
+        }),
+        
 ];
