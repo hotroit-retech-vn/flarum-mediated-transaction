@@ -19,6 +19,67 @@ flarum_common_app__WEBPACK_IMPORTED_MODULE_0___default().initializers.add('retec
 
 /***/ }),
 
+/***/ "./src/forum/components/QRModal.js":
+/*!*****************************************!*\
+  !*** ./src/forum/components/QRModal.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ QRModal)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/Modal */ "flarum/components/Modal");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var QRModal = /*#__PURE__*/function (_Modal) {
+  function QRModal() {
+    return _Modal.apply(this, arguments) || this;
+  }
+  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(QRModal, _Modal);
+  var _proto = QRModal.prototype;
+  _proto.oninit = function oninit(vnode) {
+    _Modal.prototype.oninit.call(this, vnode);
+  };
+  _proto.title = function title() {
+    return 'Thanh Toán Giao Dịch';
+  };
+  _proto.content = function content() {
+    return m('.Modal-body .row', [m('.Form-group', {
+      style: 'width: 100%; text-align: center;'
+    }, [m('a', {
+      href: 'https://me-qr.com',
+      style: 'cursor:pointer;display:block',
+      border: '0'
+    }, [m('img', {
+      src: 'https://cdn2.me-qr.com/qr/129980334.png?v=1728835376',
+      alt: 'Create QR code for free'
+    })])]), m('.Form-group ', {
+      style: 'width: 100%;'
+    }, [flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default().component({
+      type: 'submit',
+      className: 'Button Button--primary Button--block'
+    }, 'Tiếp tục tạo giao dịch')])]);
+  };
+  _proto.onsubmit = function onsubmit(event) {
+    event.preventDefault();
+    return true;
+  };
+  return QRModal;
+}((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
+
+
+/***/ }),
+
 /***/ "./src/forum/components/TransactionHistoryList.js":
 /*!********************************************************!*\
   !*** ./src/forum/components/TransactionHistoryList.js ***!
@@ -157,11 +218,7 @@ var TransactionHistoryPage = /*#__PURE__*/function (_UserPage) {
   _proto.content = function content() {
     return m("div", {
       className: "TransferHistoryPage"
-    }, _TransactionHistoryList__WEBPACK_IMPORTED_MODULE_2__["default"].component({
-      params: {
-        user: this.user
-      }
-    }));
+    });
   };
   return TransactionHistoryPage;
 }((flarum_components_UserPage__WEBPACK_IMPORTED_MODULE_1___default()));
@@ -193,6 +250,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/common/components/Alert */ "flarum/common/components/Alert");
 /* harmony import */ var flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _QRModal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./QRModal */ "./src/forum/components/QRModal.js");
+
 
 
 
@@ -209,7 +268,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   _proto.oninit = function oninit(vnode) {
     _Page.prototype.oninit.call(this, vnode);
     this.loading = true;
-    this.usernameCreate = flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().session.user.username();
+    this.user_current = (flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().session).user;
     this.initializeData();
     this.resultsUser = [];
     this.showDropdown = false;
@@ -219,13 +278,17 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     this.data = {
       rvn_creator_id: 1,
       rvn_receiver_id: '',
-      rvn_rent_amount: 0,
+      rvn_amount: 0,
       rvn_fee: 0.1,
-      rvn_fee_payer: this.usernameCreate,
+      rvn_payer_id: this.user_current.data.id,
       rvn_note: ''
     };
-    this.rvn_title = this.usernameCreate;
+    this.rvn_creator_name = flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().session.user.username();
+    this.rvn_title = this.rvn_creator_name;
     this.rvn_receiver_name = '';
+    this.rvn_service_fee = 0;
+    this.rvn_total_amount = 0;
+    this.rvn_receiver_name_change = '';
   };
   _proto.oncreate = function oncreate(vnode) {
     _Page.prototype.oncreate.call(this, vnode);
@@ -244,7 +307,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   };
   _proto.renderForm = function renderForm() {
     var _this = this;
-    return m('.IndexPage-results.sideNavOffset', [m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')), m('.Modal-body.rvn__body-form .row', [this.renderInput('Tên giao dịch', this.rvn_title, true), this.renderReceiverInput(), this.renderNumberInput('Tiền thuê', this.data.rvn_rent_amount, this.handleRentChange.bind(this)), this.renderRadioGroup(), this.renderInput("Ph\xED d\u1ECBch v\u1EE5 (" + this.data.rvn_fee * 100 + "%)", this.rvn_service_fee, true), this.renderInput('Tổng số tiền phải trả', this.rvn_total_amount, true), this.renderTextarea('Ghi chú', this.data.rvn_note, function (e) {
+    return m('.IndexPage-results.sideNavOffset', [m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')), m('.Modal-body.rvn__body-form .row', [this.renderInput('Tên giao dịch', this.rvn_title, true), this.renderReceiverInput(), this.renderNumberInput('Tiền thuê', this.data.rvn_amount, this.handleRentChange.bind(this)), this.renderRadioGroup(), this.renderInput("Ph\xED d\u1ECBch v\u1EE5 (" + this.data.rvn_fee * 100 + "%)", this.rvn_service_fee, true), this.renderInput('Tổng số tiền phải trả', this.rvn_total_amount, true), this.renderTextarea('Ghi chú', this.data.rvn_note, function (e) {
       return _this.data.rvn_note = e.target.value;
     }), this.renderCheckbox(), this.renderSubmitButton()])]);
   };
@@ -262,7 +325,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     return m('.Form-group.position-relative.col.col-md-6', [m('label', ['Người nhận ', m('span', {
       className: this.data.rvn_receiver_id ? 'rvn__text-green' : 'rvn__text-red'
     }, this.data.rvn_receiver_id ? '(Đã chọn)' : '(Chưa chọn)')]), m('input.FormControl', {
-      value: this.rvn_receiver_name,
+      value: this.rvn_receiver_name_change,
       onfocus: function onfocus() {
         return _this2.showDropdown = true;
       },
@@ -294,9 +357,9 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     })]);
   };
   _proto.renderRadioGroup = function renderRadioGroup() {
-    return m('.Form-group.col.col-md-6', [m('label', 'Người trả phí'), m('.radio-group', [this.renderRadioOption('Người gửi', this.usernameCreate, this.data.rvn_fee_payer === this.usernameCreate), this.renderRadioOption('Người nhận', this.data.rvn_receiver_id, this.data.rvn_fee_payer === this.data.rvn_receiver_id, !this.data.rvn_receiver_id)])]);
+    return m('.Form-group.col.col-md-6', [m('label', 'Người trả phí'), m('.radio-group', [this.renderRadioOption('Người gửi', this.data.rvn_creator_id, this.rvn_creator_name, this.data.rvn_payer_id == this.data.rvn_creator_id), this.renderRadioOption('Người nhận', this.data.rvn_receiver_id, this.rvn_receiver_name, this.data.rvn_payer_id == this.data.rvn_receiver_id, !this.data.rvn_receiver_id)])]);
   };
-  _proto.renderRadioOption = function renderRadioOption(label, value, checked, disabled) {
+  _proto.renderRadioOption = function renderRadioOption(label, value, text, checked, disabled) {
     var _this4 = this;
     if (disabled === void 0) {
       disabled = false;
@@ -309,7 +372,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       onchange: function onchange(e) {
         return _this4.handleFeePayerChange(e);
       }
-    }), " " + label + " (" + value + ")"]);
+    }), " " + label + " (" + text + ")"]);
   };
   _proto.renderTextarea = function renderTextarea(label, value, onChange) {
     return m('.Form-group.col.col-12', [m('label', label), m('textarea.FormControl', {
@@ -332,29 +395,30 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       type: 'button',
       className: 'Button Button--primary Button--block',
       onclick: function onclick(e) {
-        return _this6.validateForm() && _this6.onsubmit(e);
+        return _this6.onsubmit(e);
       }
     }, 'Tạo giao dịch')]);
   };
   _proto.handleRentChange = function handleRentChange(e) {
-    this.data.rvn_rent_amount = +e.target.value;
+    this.data.rvn_amount = +e.target.value;
     this.calculateTotal();
   };
   _proto.handleFeePayerChange = function handleFeePayerChange(e) {
-    this.data.rvn_fee_payer = e.target.value;
+    this.data.rvn_payer_id = e.target.value;
     this.calculateTotal();
   };
   _proto.handleSearch = function handleSearch(e) {
     var _this7 = this;
-    this.rvn_receiver_name = e.target.value;
+    this.rvn_receiver_name_change = e.target.value;
     setTimeout(function () {
       return _this7.search(e.target.value);
     }, 1000);
   };
   _proto.selectReceiver = function selectReceiver(user) {
-    this.rvn_receiver_name = user.displayName();
-    this.data.rvn_receiver_id = user.username();
-    this.rvn_title = this.usernameCreate + "__" + this.data.rvn_receiver_id;
+    this.rvn_receiver_name = user.username();
+    this.rvn_receiver_name_change = user.username();
+    this.data.rvn_receiver_id = user.data.id;
+    this.rvn_title = this.rvn_creator_name + "__" + this.rvn_receiver_name;
     this.showDropdown = false;
   };
   _proto.avatarStyle = function avatarStyle(user) {
@@ -367,12 +431,11 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   };
   _proto.validateForm = function validateForm() {
     var _this$data = this.data,
-      rvn_title = _this$data.rvn_title,
       rvn_receiver_id = _this$data.rvn_receiver_id,
-      rvn_rent_amount = _this$data.rvn_rent_amount,
+      rvn_amount = _this$data.rvn_amount,
       rvn_fee = _this$data.rvn_fee,
-      rvn_fee_payer = _this$data.rvn_fee_payer;
-    var errors = [[!rvn_title, 'Tên giao dịch không được để trống.'], [!rvn_receiver_id, 'Người nhận chưa được chọn.'], [rvn_rent_amount <= 0, 'Tiền thuê phải lớn hơn 0.'], [!rvn_fee, 'Phí dịch vụ không hợp lệ.'], [!rvn_fee_payer, 'Người trả phí chưa được chọn.'], [!this.isChecked, 'Bạn phải đồng ý với điều khoản và điều kiện.']];
+      rvn_payer_id = _this$data.rvn_payer_id;
+    var errors = [[!rvn_receiver_id, 'Người nhận chưa được chọn.'], [rvn_amount <= 0, 'Tiền thuê phải lớn hơn 0.'], [!rvn_fee, 'Phí dịch vụ không hợp lệ.'], [!rvn_payer_id, 'Người trả phí chưa được chọn.'], [!this.isChecked, 'Bạn phải đồng ý với điều khoản và điều kiện.']];
     for (var _i = 0, _errors = errors; _i < _errors.length; _i++) {
       var _errors$_i = _errors[_i],
         condition = _errors$_i[0],
@@ -393,10 +456,10 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     });
   };
   _proto.calculateTotal = function calculateTotal() {
-    var rentAmount = +this.data.rvn_rent_amount || 0;
+    var rentAmount = +this.data.rvn_amount || 0;
     var serviceFee = rentAmount * 0.1;
     this.rvn_service_fee = this.formatCurrency(serviceFee);
-    this.rvn_total_amount = this.formatCurrency(this.data.rvn_fee_payer !== this.usernameCreate ? rentAmount + serviceFee : rentAmount);
+    this.rvn_total_amount = this.formatCurrency(this.data.rvn_payer_id != this.data.rvn_creator_id ? rentAmount + serviceFee : rentAmount);
   };
   _proto.search = function search(query) {
     var _this8 = this;
@@ -407,7 +470,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
         }
       }).then(function (users) {
         _this8.resultsUser = users.filter(function (user) {
-          return user.username() !== _this8.usernameCreate;
+          return user.data.id != _this8.data.rvn_creator_id;
         });
         _this8.showDropdown = true;
         m.redraw();
@@ -429,7 +492,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       type = 'success';
     }
     if (message === void 0) {
-      message = "";
+      message = '';
     }
     if (timeClear === void 0) {
       timeClear = 5000;
@@ -443,31 +506,41 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   };
   _proto.onsubmit = function onsubmit(event) {
     event.preventDefault();
-    flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().alerts.show((flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6___default()), {
-      type: 'success'
-    }, 'Tạo giao dịch thành công!');
 
-    // app.store
-    //   .createRecord('scammers')
-    //   .save({
-    //     scammerName: this.scammerName,
-    //     scammerPhone: this.scammerPhone,
-    //     scammerEmail: this.scammerEmail,
-    //     scammerBankCode: this.scammerBankCode,
-    //     scammerBankName: this.scammerBankName,
-    //     scammerAccName: this.scammerAccName,
-    //     scammerFacebook: this.scammerFacebook,
-    //     description: this.description,
-    //     createBy: app.session.user.data.id,
+    // if (!this.validateForm()) {
+    //     return;
+    // }
+
+    this.loading = true;
+    var data = {
+      rvn_creator_id: Number(this.data.rvn_creator_id),
+      rvn_receiver_id: Number(this.data.rvn_receiver_id),
+      rvn_amount: Number(this.data.rvn_amount),
+      rvn_fee: this.data.rvn_fee,
+      rvn_payer_id: Number(this.data.rvn_payer_id),
+      rvn_note: this.data.rvn_note
+    };
+    console.log(data);
+    if (data.rvn_payer_id === data.rvn_creator_id) {
+      flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().modal.show(_QRModal__WEBPACK_IMPORTED_MODULE_7__["default"]);
+    }
+    // alert('Tính năng đang được phát triển ')
+    // app
+    //   .request({
+    //     method: 'POST',
+    //     url: app.forum.attribute('apiUrl') + '/transactions',
+    //     body: { data },
     //   })
-    //   .then(() => {
-    //     app.modal.close();
+    //   .then((response) => {
+    //     console.log(response);
+
+    //     this.showAlert('success', 'Tạo giao dịch thành công!', 5000);
+    //     this.initializeData();
+    //     this.loading = false;
     //   })
     //   .catch((error) => {
-    //     console.log(error);
-    //     m.redraw();
-
-    //     throw error;
+    //     this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
+    //     this.loading = false;
     //   });
   };
   return TransactionPage;
@@ -511,19 +584,19 @@ flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().initializers.add('retech
     path: '/giao-dich-trung-gian',
     component: _components_TransactionPage__WEBPACK_IMPORTED_MODULE_4__["default"]
   };
-  (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().routes)["user.transactionHistory"] = {
-    path: "/u/:username/transactionHistory",
+  (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().routes)["user.transactionHistoryPage"] = {
+    path: "/u/:username/lich-su-giao-dich",
     component: _components_TransactionHistoryPage__WEBPACK_IMPORTED_MODULE_7__["default"]
   };
 
   // Thêm nút Giao dịch trung gian ở navItems
   (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_2__.extend)((flarum_components_IndexPage__WEBPACK_IMPORTED_MODULE_3___default().prototype), 'navItems', function (items) {
-    if ((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session) && (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user && flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session.user.isAdmin()) {
-      items.add('transactionPage', m((flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default()), {
-        href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('transactionPage'),
-        icon: "fas fa-magic"
-      }, 'Giao dịch trung gian'), 100);
-    }
+    // if (app.session && app.session.user && app.session.user.isAdmin()) {
+    items.add('transactionPage', m((flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default()), {
+      href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('transactionPage'),
+      icon: "fas fa-magic"
+    }, 'Giao dịch trung gian'), 100);
+    // }
   });
 
   // Hiển thị tiển ở trên header
@@ -540,7 +613,7 @@ flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().initializers.add('retech
       var targetUserID = this.user.id();
       if (currentUserID == targetUserID) {
         items.add("transactionMoney", flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default().component({
-          href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route("user.transactionHistory", {
+          href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route("user.transactionHistoryPage", {
             username: this.user.username()
           }),
           icon: "fas fa-money-bill"
@@ -659,6 +732,17 @@ module.exports = flarum.core.compat['components/LinkButton'];
 
 "use strict";
 module.exports = flarum.core.compat['components/LoadingIndicator'];
+
+/***/ }),
+
+/***/ "flarum/components/Modal":
+/*!*********************************************************!*\
+  !*** external "flarum.core.compat['components/Modal']" ***!
+  \*********************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = flarum.core.compat['components/Modal'];
 
 /***/ }),
 

@@ -10,11 +10,11 @@ export default class TransactionHistoryPage extends UserPage {
   content() {
     return (
       <div className="TransferHistoryPage">
-        {TransferHistoryList.component({
+        {/* {TransferHistoryList.component({
           params: {
             user: this.user,
           },
-        })}
+        })} */}
       </div>
     );
   }

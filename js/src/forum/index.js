@@ -14,14 +14,14 @@ app.initializers.add('retechvn/mediated-transaction', () => {
     component: TransactionPage,
   };
 
-  app.routes["user.transactionHistory"] = {
-    path: "/u/:username/transactionHistory",
+  app.routes["user.transactionHistoryPage"] = {
+    path: "/u/:username/lich-su-giao-dich",
     component: TransactionHistoryPage,
   };
 
   // Thêm nút Giao dịch trung gian ở navItems
   extend(IndexPage.prototype, 'navItems', (items) => {
-    if (app.session && app.session.user && app.session.user.isAdmin()) {
+    // if (app.session && app.session.user && app.session.user.isAdmin()) {
     items.add(
       'transactionPage',
       <LinkButton href={app.route('transactionPage')} icon="fas fa-magic">
@@ -29,7 +29,7 @@ app.initializers.add('retechvn/mediated-transaction', () => {
       </LinkButton>,
       100
     );
-  }
+  // }
   });
 
   // Hiển thị tiển ở trên header
@@ -49,7 +49,7 @@ app.initializers.add('retechvn/mediated-transaction', () => {
         items.add(
           "transactionMoney",
           LinkButton.component({
-              href: app.route("user.transactionHistory", {
+              href: app.route("user.transactionHistoryPage", {
                 username: this.user.username(),
               }),
               icon: "fas fa-money-bill",
