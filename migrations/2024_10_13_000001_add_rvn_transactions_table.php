@@ -9,6 +9,7 @@ return [
         if (!$schema->hasTable('rvn_transactions')) {
             $schema->create('rvn_transactions', function (Blueprint $table) {
                 $table->id();
+                $table->string('rvn_title', 120)->nullable();
                 $table->unsignedInteger('rvn_creator_id');
                 $table->unsignedInteger('rvn_receiver_id');
                 $table->unsignedInteger('rvn_amount');

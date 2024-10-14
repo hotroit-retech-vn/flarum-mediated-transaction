@@ -31,6 +31,7 @@ class CreateTransactionController extends AbstractCreateController
     {
 
         $requestData = $request->getParsedBody()['data']['attributes'];
+        $rvnTitle = intval($requestData['rvn_title']);
         $rvnCreatorID = intval($requestData['rvn_creator_id']);
         $rvnReceiverID = intval($requestData['rvn_receiver_id']);
         $rvnAmount = intval($requestData['rvn_amount']);
@@ -42,7 +43,7 @@ class CreateTransactionController extends AbstractCreateController
         $errorMessage = "";
 
         $currentUserData = User::find($currentUserID);
-
+        // $allowUsePoint = $currentUserData
 
 
 

@@ -17,6 +17,7 @@ class TransactionSerializer extends AbstractSerializer
     {
         $attributes = [
             'id' => $model->id,
+            'rvn_title' => $model->rvn_title,
             'rvn_creator_id' => $model->rvn_creator_id,
             'rvn_receiver_id' => $model->rvn_receiver_id,
             'rvn_amount' => $model->rvn_amount,

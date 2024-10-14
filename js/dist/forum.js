@@ -72,7 +72,8 @@ var QRModal = /*#__PURE__*/function (_Modal) {
   };
   _proto.onsubmit = function onsubmit(event) {
     event.preventDefault();
-    return true;
+    this.attrs.onsubmit(true);
+    flarum_app__WEBPACK_IMPORTED_MODULE_2___default().modal.close();
   };
   return QRModal;
 }((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
@@ -276,6 +277,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   };
   _proto.initializeData = function initializeData() {
     this.data = {
+      rvn_title: '',
       rvn_creator_id: 1,
       rvn_receiver_id: '',
       rvn_amount: 0,
@@ -284,11 +286,11 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       rvn_note: ''
     };
     this.rvn_creator_name = flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().session.user.username();
-    this.rvn_title = this.rvn_creator_name;
     this.rvn_receiver_name = '';
     this.rvn_service_fee = 0;
     this.rvn_total_amount = 0;
-    this.rvn_receiver_name_change = '';
+    this.rvn_receiver_name_search = '';
+    this.rvn_receiver_name_select = '';
   };
   _proto.oncreate = function oncreate(vnode) {
     _Page.prototype.oncreate.call(this, vnode);
@@ -307,30 +309,47 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   };
   _proto.renderForm = function renderForm() {
     var _this = this;
-    return m('.IndexPage-results.sideNavOffset', [m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')), m('.Modal-body.rvn__body-form .row', [this.renderInput('Tên giao dịch', this.rvn_title, true), this.renderReceiverInput(), this.renderNumberInput('Tiền thuê', this.data.rvn_amount, this.handleRentChange.bind(this)), this.renderRadioGroup(), this.renderInput("Ph\xED d\u1ECBch v\u1EE5 (" + this.data.rvn_fee * 100 + "%)", this.rvn_service_fee, true), this.renderInput('Tổng số tiền phải trả', this.rvn_total_amount, true), this.renderTextarea('Ghi chú', this.data.rvn_note, function (e) {
+    return m('.IndexPage-results.sideNavOffset', [m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')), m('.Modal-body.rvn__body-form .row', [this.renderInputTitle("T\xEAn \u0111\u1ED3 \xE1n (M\u1EB7c \u0111\u1ECBnh: " + this.rvn_creator_name + "__" + this.rvn_receiver_name + " )", 'Nhập tên đồ án', this.data.rvn_title), this.renderReceiverInput('Tên đối tác', 'Nhập tên đối tác cần tìm kiếm'), this.renderNumberInput('Tiền thuê', this.data.rvn_amount, this.handleRentChange.bind(this)), this.renderInput("Ph\xED d\u1ECBch v\u1EE5 (" + this.data.rvn_fee * 100 + "%)", '', this.rvn_service_fee, true), this.renderRadioGroup('Người trả phí', 'Bạn trả phí', 'Đối tác trả phi'), this.renderInput('Tổng tiền bạn phải trả', '', this.rvn_total_amount, true), this.renderTextarea('Ghi chú', this.data.rvn_note, function (e) {
       return _this.data.rvn_note = e.target.value;
     }), this.renderCheckbox(), this.renderSubmitButton()])]);
   };
-  _proto.renderInput = function renderInput(label, value, disabled) {
+  _proto.renderInputTitle = function renderInputTitle(label, placeholder, value, disabled) {
+    var _this2 = this;
     if (disabled === void 0) {
       disabled = false;
     }
     return m('.Form-group.col.col-md-6', [m('label', label), m('input.FormControl', {
       value: value,
-      disabled: disabled
+      disabled: disabled,
+      placeholder: placeholder,
+      maxlength: 50,
+      onchange: function onchange(e) {
+        return _this2.data.rvn_title = e.target.value;
+      }
     })]);
   };
-  _proto.renderReceiverInput = function renderReceiverInput() {
-    var _this2 = this;
-    return m('.Form-group.position-relative.col.col-md-6', [m('label', ['Người nhận ', m('span', {
+  _proto.renderInput = function renderInput(label, placeholder, value, disabled) {
+    if (disabled === void 0) {
+      disabled = false;
+    }
+    return m('.Form-group.col.col-md-6', [m('label', label), m('input.FormControl', {
+      value: value,
+      disabled: disabled,
+      placeholder: placeholder
+    })]);
+  };
+  _proto.renderReceiverInput = function renderReceiverInput(lable, placeholder) {
+    var _this3 = this;
+    return m('.Form-group.position-relative.col.col-md-6', [m('label', [lable, m('span', {
       className: this.data.rvn_receiver_id ? 'rvn__text-green' : 'rvn__text-red'
-    }, this.data.rvn_receiver_id ? '(Đã chọn)' : '(Chưa chọn)')]), m('input.FormControl', {
-      value: this.rvn_receiver_name_change,
+    }, this.data.rvn_receiver_id ? " (" + this.rvn_receiver_name_select + ")" : ' (Chưa chọn)')]), m('input.FormControl', {
+      value: this.rvn_receiver_name_search,
+      placeholder: placeholder,
       onfocus: function onfocus() {
-        return _this2.showDropdown = true;
+        return _this3.showDropdown = true;
       },
       onkeyup: function onkeyup(e) {
-        return _this2.handleSearch(e);
+        return _this3.handleSearch(e);
       }
     }), this.showDropdown && this.renderDropdown()]);
   };
@@ -338,17 +357,17 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     return m('.search-results', this.resultsUser.length ? this.resultsUser.map(this.renderDropdownItem.bind(this)) : m('div.no-results.rvn__mx2', 'Không có dữ liệu'));
   };
   _proto.renderDropdownItem = function renderDropdownItem(user) {
-    var _this3 = this;
+    var _this4 = this;
     return m('div.search-result-item', {
       onclick: function onclick() {
-        return _this3.selectReceiver(user);
+        return _this4.selectReceiver(user);
       }
     }, [user.avatarUrl() ? m('img.Avatar', {
       src: user.avatarUrl(),
       alt: user.displayName()
-    }) : m('span.Avatar', {
+    }) : m('span.Avatar .rvn__avatar', {
       style: this.avatarStyle(user)
-    }, user.displayName().charAt(0).toUpperCase()), m('span.username', user.displayName())]);
+    }, user.displayName().charAt(0).toUpperCase()), m('span.username', "  " + user.displayName() + " (" + user.username() + ")")]);
   };
   _proto.renderNumberInput = function renderNumberInput(label, value, onChange) {
     return m('.Form-group.col.col-md-6', [m('label', label + " (" + this.formatCurrency(value) + ")"), m('input[type=number].FormControl', {
@@ -356,11 +375,11 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       onchange: onChange
     })]);
   };
-  _proto.renderRadioGroup = function renderRadioGroup() {
-    return m('.Form-group.col.col-md-6', [m('label', 'Người trả phí'), m('.radio-group', [this.renderRadioOption('Người gửi', this.data.rvn_creator_id, this.rvn_creator_name, this.data.rvn_payer_id == this.data.rvn_creator_id), this.renderRadioOption('Người nhận', this.data.rvn_receiver_id, this.rvn_receiver_name, this.data.rvn_payer_id == this.data.rvn_receiver_id, !this.data.rvn_receiver_id)])]);
+  _proto.renderRadioGroup = function renderRadioGroup(lable, lableC1, labelC2) {
+    return m('.Form-group.col.col-md-6', [m('label', lable), m('.radio-group', [this.renderRadioOption(lableC1, this.data.rvn_creator_id, this.rvn_creator_name, this.data.rvn_payer_id == this.data.rvn_creator_id), this.renderRadioOption(labelC2, this.data.rvn_receiver_id, this.rvn_receiver_name, this.data.rvn_payer_id == this.data.rvn_receiver_id, !this.data.rvn_receiver_id)])]);
   };
   _proto.renderRadioOption = function renderRadioOption(label, value, text, checked, disabled) {
-    var _this4 = this;
+    var _this5 = this;
     if (disabled === void 0) {
       disabled = false;
     }
@@ -370,32 +389,32 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       checked: checked,
       disabled: disabled,
       onchange: function onchange(e) {
-        return _this4.handleFeePayerChange(e);
+        return _this5.handleFeePayerChange(e);
       }
     }), " " + label + " (" + text + ")"]);
   };
   _proto.renderTextarea = function renderTextarea(label, value, onChange) {
-    return m('.Form-group.col.col-12', [m('label', label), m('textarea.FormControl', {
+    return m('.Form-group.col.col-12.rvn_note', [m('label', label), m('textarea.FormControl', {
       value: value,
       onchange: onChange
     })]);
   };
   _proto.renderCheckbox = function renderCheckbox() {
-    var _this5 = this;
+    var _this6 = this;
     return m('.Form-group.col', [m('label', [m('input[type=checkbox]', {
       checked: this.isChecked,
       onchange: function onchange(e) {
-        return _this5.isChecked = e.target.checked;
+        return _this6.isChecked = e.target.checked;
       }
     }), ' Đồng ý với điều khoản và điều kiện!'])]);
   };
   _proto.renderSubmitButton = function renderSubmitButton() {
-    var _this6 = this;
+    var _this7 = this;
     return m('.Form-group.col.col-12', [flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default().component({
       type: 'button',
       className: 'Button Button--primary Button--block',
       onclick: function onclick(e) {
-        return _this6.onsubmit(e);
+        return _this7.onsubmit(e);
       }
     }, 'Tạo giao dịch')]);
   };
@@ -408,17 +427,17 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     this.calculateTotal();
   };
   _proto.handleSearch = function handleSearch(e) {
-    var _this7 = this;
-    this.rvn_receiver_name_change = e.target.value;
+    var _this8 = this;
+    this.rvn_receiver_name_search = e.target.value;
     setTimeout(function () {
-      return _this7.search(e.target.value);
+      return _this8.search(e.target.value);
     }, 1000);
   };
   _proto.selectReceiver = function selectReceiver(user) {
     this.rvn_receiver_name = user.username();
-    this.rvn_receiver_name_change = user.username();
+    this.rvn_receiver_name_search = '';
+    this.rvn_receiver_name_select = user.displayName() + " (" + user.username() + ")";
     this.data.rvn_receiver_id = user.data.id;
-    this.rvn_title = this.rvn_creator_name + "__" + this.rvn_receiver_name;
     this.showDropdown = false;
   };
   _proto.avatarStyle = function avatarStyle(user) {
@@ -431,11 +450,12 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   };
   _proto.validateForm = function validateForm() {
     var _this$data = this.data,
+      rvn_title = _this$data.rvn_title,
       rvn_receiver_id = _this$data.rvn_receiver_id,
       rvn_amount = _this$data.rvn_amount,
       rvn_fee = _this$data.rvn_fee,
       rvn_payer_id = _this$data.rvn_payer_id;
-    var errors = [[!rvn_receiver_id, 'Người nhận chưa được chọn.'], [rvn_amount <= 0, 'Tiền thuê phải lớn hơn 0.'], [!rvn_fee, 'Phí dịch vụ không hợp lệ.'], [!rvn_payer_id, 'Người trả phí chưa được chọn.'], [!this.isChecked, 'Bạn phải đồng ý với điều khoản và điều kiện.']];
+    var errors = [[rvn_title.length > 50, 'Tên đồ án giới hạn 50 ký tự.'], [!rvn_receiver_id, 'Chưa chọn tên đối tác.'], [rvn_amount <= 0, 'Tiền thuê phải lớn hơn 0.'], [!rvn_fee, 'Phí dịch vụ không hợp lệ.'], [!rvn_payer_id, 'Người trả phí chưa được chọn.'], [!this.isChecked, 'Bạn phải đồng ý với điều khoản và điều kiện.']];
     for (var _i = 0, _errors = errors; _i < _errors.length; _i++) {
       var _errors$_i = _errors[_i],
         condition = _errors$_i[0],
@@ -459,20 +479,20 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     var rentAmount = +this.data.rvn_amount || 0;
     var serviceFee = rentAmount * 0.1;
     this.rvn_service_fee = this.formatCurrency(serviceFee);
-    this.rvn_total_amount = this.formatCurrency(this.data.rvn_payer_id != this.data.rvn_creator_id ? rentAmount + serviceFee : rentAmount);
+    this.rvn_total_amount = this.formatCurrency(this.data.rvn_payer_id == this.data.rvn_creator_id ? rentAmount + serviceFee : rentAmount);
   };
   _proto.search = function search(query) {
-    var _this8 = this;
+    var _this9 = this;
     if (query.trim()) {
       flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().store.find('users', {
         filter: {
           q: query
         }
       }).then(function (users) {
-        _this8.resultsUser = users.filter(function (user) {
-          return user.data.id != _this8.data.rvn_creator_id;
+        _this9.resultsUser = users.filter(function (user) {
+          return user.data.id != _this9.data.rvn_creator_id;
         });
-        _this8.showDropdown = true;
+        _this9.showDropdown = true;
         m.redraw();
       });
     } else {
@@ -505,14 +525,16 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
     }, timeClear);
   };
   _proto.onsubmit = function onsubmit(event) {
+    var _this10 = this;
     event.preventDefault();
 
     // if (!this.validateForm()) {
-    //     return;
+    //   return;
     // }
 
     this.loading = true;
     var data = {
+      rvn_title: this.data.rvn_title == '' ? this.rvn_creator_name + "__" + this.rvn_receiver_name : this.data.rvn_title,
       rvn_creator_id: Number(this.data.rvn_creator_id),
       rvn_receiver_id: Number(this.data.rvn_receiver_id),
       rvn_amount: Number(this.data.rvn_amount),
@@ -521,27 +543,29 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       rvn_note: this.data.rvn_note
     };
     console.log(data);
-    if (data.rvn_payer_id === data.rvn_creator_id) {
-      flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().modal.show(_QRModal__WEBPACK_IMPORTED_MODULE_7__["default"]);
-    }
-    // alert('Tính năng đang được phát triển ')
-    // app
-    //   .request({
-    //     method: 'POST',
-    //     url: app.forum.attribute('apiUrl') + '/transactions',
-    //     body: { data },
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-
-    //     this.showAlert('success', 'Tạo giao dịch thành công!', 5000);
-    //     this.initializeData();
-    //     this.loading = false;
-    //   })
-    //   .catch((error) => {
-    //     this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
-    //     this.loading = false;
-    //   });
+    var confirm = false;
+    flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().modal.show(_QRModal__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      onsubmit: function onsubmit(confirm) {
+        confirm = confirm;
+        console.log(confirm);
+        flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().request({
+          method: 'POST',
+          url: flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().forum.attribute('apiUrl') + '/transactions',
+          body: {
+            data: data
+          }
+        }).then(function (response) {
+          console.log(response);
+          _this10.showAlert('success', 'Tạo giao dịch thành công!', 5000);
+          _this10.initializeData();
+          _this10.loading = false;
+        })["catch"](function (error) {
+          console.log(error);
+          _this10.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
+          _this10.loading = false;
+        });
+      }
+    });
   };
   return TransactionPage;
 }((flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_2___default()));

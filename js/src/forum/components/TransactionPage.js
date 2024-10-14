@@ -19,6 +19,7 @@ export default class TransactionPage extends Page {
 
   initializeData() {
     this.data = {
+      rvn_title: '',
       rvn_creator_id: 1,
       rvn_receiver_id: '',
       rvn_amount: 0,
@@ -28,11 +29,11 @@ export default class TransactionPage extends Page {
     };
 
     this.rvn_creator_name = app.session.user.username();
-    this.rvn_title = this.rvn_creator_name;
     this.rvn_receiver_name = '';
     this.rvn_service_fee = 0;
     this.rvn_total_amount = 0;
-    this.rvn_receiver_name_change = '';
+    this.rvn_receiver_name_search = '';
+    this.rvn_receiver_name_select = '';
   }
 
   oncreate(vnode) {
@@ -58,12 +59,12 @@ export default class TransactionPage extends Page {
     return m('.IndexPage-results.sideNavOffset', [
       m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')),
       m('.Modal-body.rvn__body-form .row', [
-        this.renderInput('Tên giao dịch', this.rvn_title, true),
-        this.renderReceiverInput(),
+        this.renderInputTitle(`Tên đồ án (Mặc định: ${this.rvn_creator_name}__${this.rvn_receiver_name} )`, 'Nhập tên đồ án', this.data.rvn_title),
+        this.renderReceiverInput('Tên đối tác', 'Nhập tên đối tác cần tìm kiếm'),
         this.renderNumberInput('Tiền thuê', this.data.rvn_amount, this.handleRentChange.bind(this)),
-        this.renderRadioGroup(),
-        this.renderInput(`Phí dịch vụ (${this.data.rvn_fee * 100}%)`, this.rvn_service_fee, true),
-        this.renderInput('Tổng số tiền phải trả', this.rvn_total_amount, true),
+        this.renderInput(`Phí dịch vụ (${this.data.rvn_fee * 100}%)`, '', this.rvn_service_fee, true),
+        this.renderRadioGroup('Người trả phí', 'Bạn trả phí', 'Đối tác trả phi'),
+        this.renderInput('Tổng tiền bạn phải trả', '', this.rvn_total_amount, true),
         this.renderTextarea('Ghi chú', this.data.rvn_note, (e) => (this.data.rvn_note = e.target.value)),
         this.renderCheckbox(),
         this.renderSubmitButton(),
@@ -71,22 +72,36 @@ export default class TransactionPage extends Page {
     ]);
   }
 
-  renderInput(label, value, disabled = false) {
-    return m('.Form-group.col.col-md-6', [m('label', label), m('input.FormControl', { value, disabled })]);
+  renderInputTitle(label, placeholder, value, disabled = false) {
+    return m('.Form-group.col.col-md-6', [
+      m('label', label),
+      m('input.FormControl', {
+        value: value,
+        disabled: disabled,
+        placeholder: placeholder,
+        maxlength: 50,
+        onchange: (e) => (this.data.rvn_title = e.target.value),
+      }),
+    ]);
   }
 
-  renderReceiverInput() {
+  renderInput(label, placeholder, value, disabled = false) {
+    return m('.Form-group.col.col-md-6', [m('label', label), m('input.FormControl', { value, disabled, placeholder })]);
+  }
+
+  renderReceiverInput(lable, placeholder) {
     return m('.Form-group.position-relative.col.col-md-6', [
       m('label', [
-        'Người nhận ',
+        lable,
         m(
           'span',
           { className: this.data.rvn_receiver_id ? 'rvn__text-green' : 'rvn__text-red' },
-          this.data.rvn_receiver_id ? '(Đã chọn)' : '(Chưa chọn)'
+          this.data.rvn_receiver_id ? ` (${this.rvn_receiver_name_select})` : ' (Chưa chọn)'
         ),
       ]),
       m('input.FormControl', {
-        value: this.rvn_receiver_name_change,
+        value: this.rvn_receiver_name_search,
+        placeholder: placeholder,
         onfocus: () => (this.showDropdown = true),
         onkeyup: (e) => this.handleSearch(e),
       }),
@@ -105,8 +120,8 @@ export default class TransactionPage extends Page {
     return m('div.search-result-item', { onclick: () => this.selectReceiver(user) }, [
       user.avatarUrl()
         ? m('img.Avatar', { src: user.avatarUrl(), alt: user.displayName() })
-        : m('span.Avatar', { style: this.avatarStyle(user) }, user.displayName().charAt(0).toUpperCase()),
-      m('span.username', user.displayName()),
+        : m('span.Avatar .rvn__avatar', { style: this.avatarStyle(user) }, user.displayName().charAt(0).toUpperCase()),
+      m('span.username', `  ${user.displayName()} (${user.username()})`),
     ]);
   }
 
@@ -117,13 +132,13 @@ export default class TransactionPage extends Page {
     ]);
   }
 
-  renderRadioGroup() {
+  renderRadioGroup(lable, lableC1, labelC2) {
     return m('.Form-group.col.col-md-6', [
-      m('label', 'Người trả phí'),
+      m('label', lable),
       m('.radio-group', [
-        this.renderRadioOption('Người gửi', this.data.rvn_creator_id,this.rvn_creator_name,  this.data.rvn_payer_id == this.data.rvn_creator_id),
+        this.renderRadioOption(lableC1, this.data.rvn_creator_id, this.rvn_creator_name, this.data.rvn_payer_id == this.data.rvn_creator_id),
         this.renderRadioOption(
-          'Người nhận',
+          labelC2,
           this.data.rvn_receiver_id,
           this.rvn_receiver_name,
           this.data.rvn_payer_id == this.data.rvn_receiver_id,
@@ -133,7 +148,7 @@ export default class TransactionPage extends Page {
     ]);
   }
 
-  renderRadioOption(label, value,text , checked, disabled = false) {
+  renderRadioOption(label, value, text, checked, disabled = false) {
     return m('label', [
       m('input[type=radio]', {
         name: 'fee_payer',
@@ -147,7 +162,7 @@ export default class TransactionPage extends Page {
   }
 
   renderTextarea(label, value, onChange) {
-    return m('.Form-group.col.col-12', [m('label', label), m('textarea.FormControl', { value, onchange: onChange })]);
+    return m('.Form-group.col.col-12.rvn_note', [m('label', label), m('textarea.FormControl', { value, onchange: onChange })]);
   }
 
   renderCheckbox() {
@@ -186,15 +201,15 @@ export default class TransactionPage extends Page {
   }
 
   handleSearch(e) {
-    this.rvn_receiver_name_change = e.target.value
+    this.rvn_receiver_name_search = e.target.value;
     setTimeout(() => this.search(e.target.value), 1000);
   }
 
   selectReceiver(user) {
     this.rvn_receiver_name = user.username();
-    this.rvn_receiver_name_change = user.username()
+    this.rvn_receiver_name_search = '';
+    this.rvn_receiver_name_select = `${user.displayName()} (${user.username()})`;
     this.data.rvn_receiver_id = user.data.id;
-    this.rvn_title = `${this.rvn_creator_name}__${this.rvn_receiver_name}`;
     this.showDropdown = false;
   }
 
@@ -208,9 +223,10 @@ export default class TransactionPage extends Page {
   }
 
   validateForm() {
-    const { rvn_receiver_id, rvn_amount, rvn_fee, rvn_payer_id } = this.data;
+    const { rvn_title, rvn_receiver_id, rvn_amount, rvn_fee, rvn_payer_id } = this.data;
     const errors = [
-      [!rvn_receiver_id, 'Người nhận chưa được chọn.'],
+      [rvn_title.length > 50, 'Tên đồ án giới hạn 50 ký tự.'],
+      [!rvn_receiver_id, 'Chưa chọn tên đối tác.'],
       [rvn_amount <= 0, 'Tiền thuê phải lớn hơn 0.'],
       [!rvn_fee, 'Phí dịch vụ không hợp lệ.'],
       [!rvn_payer_id, 'Người trả phí chưa được chọn.'],
@@ -240,7 +256,7 @@ export default class TransactionPage extends Page {
     const rentAmount = +this.data.rvn_amount || 0;
     const serviceFee = rentAmount * 0.1;
     this.rvn_service_fee = this.formatCurrency(serviceFee);
-    this.rvn_total_amount = this.formatCurrency(this.data.rvn_payer_id != this.data.rvn_creator_id ? rentAmount + serviceFee : rentAmount);
+    this.rvn_total_amount = this.formatCurrency(this.data.rvn_payer_id == this.data.rvn_creator_id ? rentAmount + serviceFee : rentAmount);
   }
 
   search(query) {
@@ -275,12 +291,13 @@ export default class TransactionPage extends Page {
     event.preventDefault();
 
     // if (!this.validateForm()) {
-    //     return;
+    //   return;
     // }
 
     this.loading = true;
 
     const data = {
+      rvn_title: this.data.rvn_title == '' ? `${this.rvn_creator_name}__${this.rvn_receiver_name}` : this.data.rvn_title,
       rvn_creator_id: Number(this.data.rvn_creator_id),
       rvn_receiver_id: Number(this.data.rvn_receiver_id),
       rvn_amount: Number(this.data.rvn_amount),
@@ -290,26 +307,33 @@ export default class TransactionPage extends Page {
     };
     console.log(data);
 
-    if(data.rvn_payer_id === data.rvn_creator_id){
-      app.modal.show(QRModal);
-    }
-    // alert('Tính năng đang được phát triển ')
-    // app
-    //   .request({
-    //     method: 'POST',
-    //     url: app.forum.attribute('apiUrl') + '/transactions',
-    //     body: { data },
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-
-    //     this.showAlert('success', 'Tạo giao dịch thành công!', 5000);
-    //     this.initializeData();
-    //     this.loading = false;
-    //   })
-    //   .catch((error) => {
-    //     this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
-    //     this.loading = false;
-    //   });
+    const confirm = false;
+    app.modal.show(QRModal, {  
+      onsubmit: (confirm) => {
+        confirm = confirm;
+        console.log(confirm);
+        
+        app
+          .request({
+            method: 'POST',
+            url: app.forum.attribute('apiUrl') + '/transactions',
+            body: { data },
+          })
+          .then((response) => {
+            console.log(response);
+    
+            this.showAlert('success', 'Tạo giao dịch thành công!', 5000);
+            this.initializeData();
+            this.loading = false;
+          })
+          .catch((error) => {
+            console.log(error);
+            
+            this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
+            this.loading = false;
+          });
+        
+      }
+    })
   }
 }

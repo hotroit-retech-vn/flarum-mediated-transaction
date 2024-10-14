@@ -3,6 +3,9 @@ import app from 'flarum/app';
 import Button from 'flarum/components/Button';
 
 export default class QRModal extends Modal {
+
+
+
   oninit(vnode) {
     super.oninit(vnode);
   }
@@ -49,6 +52,7 @@ export default class QRModal extends Modal {
 
   onsubmit(event) {
     event.preventDefault();
-    return true;
+    this.attrs.onsubmit(true)
+    app.modal.close();
   }
 }
