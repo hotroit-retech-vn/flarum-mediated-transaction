@@ -362,10 +362,10 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       onclick: function onclick() {
         return _this4.selectReceiver(user);
       }
-    }, [user.avatarUrl() ? m('img.Avatar', {
+    }, [user.avatarUrl() ? m('img.Avatar.rvn__avatar', {
       src: user.avatarUrl(),
       alt: user.displayName()
-    }) : m('span.Avatar .rvn__avatar', {
+    }) : m('span.Avatar.rvn__avatar', {
       style: this.avatarStyle(user)
     }, user.displayName().charAt(0).toUpperCase()), m('span.username', "  " + user.displayName() + " (" + user.username() + ")")]);
   };
@@ -443,9 +443,7 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   _proto.avatarStyle = function avatarStyle(user) {
     return {
       '--avatar-bg': user.color(),
-      'font-size': '20px',
-      '--size': '30px',
-      margin: '0 10px'
+      'font-size': '20px'
     };
   };
   _proto.validateForm = function validateForm() {
@@ -527,11 +525,9 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   _proto.onsubmit = function onsubmit(event) {
     var _this10 = this;
     event.preventDefault();
-
-    // if (!this.validateForm()) {
-    //   return;
-    // }
-
+    if (!this.validateForm()) {
+      return;
+    }
     this.loading = true;
     var data = {
       rvn_title: this.data.rvn_title == '' ? this.rvn_creator_name + "__" + this.rvn_receiver_name : this.data.rvn_title,

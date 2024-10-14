@@ -119,8 +119,8 @@ export default class TransactionPage extends Page {
   renderDropdownItem(user) {
     return m('div.search-result-item', { onclick: () => this.selectReceiver(user) }, [
       user.avatarUrl()
-        ? m('img.Avatar', { src: user.avatarUrl(), alt: user.displayName() })
-        : m('span.Avatar .rvn__avatar', { style: this.avatarStyle(user) }, user.displayName().charAt(0).toUpperCase()),
+        ? m('img.Avatar.rvn__avatar', { src: user.avatarUrl(), alt: user.displayName() })
+        : m('span.Avatar.rvn__avatar', { style: this.avatarStyle(user) }, user.displayName().charAt(0).toUpperCase()),
       m('span.username', `  ${user.displayName()} (${user.username()})`),
     ]);
   }
@@ -217,8 +217,6 @@ export default class TransactionPage extends Page {
     return {
       '--avatar-bg': user.color(),
       'font-size': '20px',
-      '--size': '30px',
-      margin: '0 10px',
     };
   }
 
@@ -290,9 +288,9 @@ export default class TransactionPage extends Page {
   onsubmit(event) {
     event.preventDefault();
 
-    // if (!this.validateForm()) {
-    //   return;
-    // }
+    if (!this.validateForm()) {
+      return;
+    }
 
     this.loading = true;
 
