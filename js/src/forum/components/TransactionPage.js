@@ -19,7 +19,6 @@ export default class TransactionPage extends Page {
 
   initializeData() {
     this.data = {
-      rvn_title: '',
       rvn_creator_id: 1,
       rvn_receiver_id: '',
       rvn_amount: 0,
@@ -59,7 +58,7 @@ export default class TransactionPage extends Page {
     return m('.IndexPage-results.sideNavOffset', [
       m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')),
       m('.Modal-body.rvn__body-form .row', [
-        this.renderInputTitle(`Tên đồ án (Mặc định: ${this.rvn_creator_name}__${this.rvn_receiver_name} )`, 'Nhập tên đồ án', this.data.rvn_title),
+        this.renderInput(`Tên đồ án`, 'Nhập tên đồ án',  this.rvn_creator_name + `${this.rvn_receiver_name != '' ? '__' +this.rvn_receiver_name : ''}`, true),
         this.renderReceiverInput('Tên đối tác', 'Nhập tên đối tác cần tìm kiếm'),
         this.renderNumberInput('Tiền thuê', this.data.rvn_amount, this.handleRentChange.bind(this)),
         this.renderInput(`Phí dịch vụ (${this.data.rvn_fee * 100}%)`, '', this.rvn_service_fee, true),
@@ -72,18 +71,6 @@ export default class TransactionPage extends Page {
     ]);
   }
 
-  renderInputTitle(label, placeholder, value, disabled = false) {
-    return m('.Form-group.col.col-md-6', [
-      m('label', label),
-      m('input.FormControl', {
-        value: value,
-        disabled: disabled,
-        placeholder: placeholder,
-        maxlength: 50,
-        onchange: (e) => (this.data.rvn_title = e.target.value),
-      }),
-    ]);
-  }
 
   renderInput(label, placeholder, value, disabled = false) {
     return m('.Form-group.col.col-md-6', [m('label', label), m('input.FormControl', { value, disabled, placeholder })]);
@@ -221,9 +208,8 @@ export default class TransactionPage extends Page {
   }
 
   validateForm() {
-    const { rvn_title, rvn_receiver_id, rvn_amount, rvn_fee, rvn_payer_id } = this.data;
+    const { rvn_receiver_id, rvn_amount, rvn_fee, rvn_payer_id } = this.data;
     const errors = [
-      [rvn_title.length > 50, 'Tên đồ án giới hạn 50 ký tự.'],
       [!rvn_receiver_id, 'Chưa chọn tên đối tác.'],
       [rvn_amount <= 0, 'Tiền thuê phải lớn hơn 0.'],
       [!rvn_fee, 'Phí dịch vụ không hợp lệ.'],
@@ -295,7 +281,6 @@ export default class TransactionPage extends Page {
     this.loading = true;
 
     const data = {
-      rvn_title: this.data.rvn_title == '' ? `${this.rvn_creator_name}__${this.rvn_receiver_name}` : this.data.rvn_title,
       rvn_creator_id: Number(this.data.rvn_creator_id),
       rvn_receiver_id: Number(this.data.rvn_receiver_id),
       rvn_amount: Number(this.data.rvn_amount),

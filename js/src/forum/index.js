@@ -5,7 +5,7 @@ import IndexPage from 'flarum/components/IndexPage';
 import TransactionPage from './components/TransactionPage';
 import HeaderSecondary from 'flarum/forum/components/HeaderSecondary';
 
-import UserPage from "flarum/components/UserPage";
+import UserPage from 'flarum/components/UserPage';
 import TransactionHistoryPage from './components/TransactionHistoryPage';
 
 app.initializers.add('retechvn/mediated-transaction', () => {
@@ -14,8 +14,8 @@ app.initializers.add('retechvn/mediated-transaction', () => {
     component: TransactionPage,
   };
 
-  app.routes["user.transactionHistoryPage"] = {
-    path: "/u/:username/lich-su-giao-dich",
+  app.routes['user.transactionHistoryPage'] = {
+    path: '/u/:username/lich-su-giao-dich',
     component: TransactionHistoryPage,
   };
 
@@ -29,38 +29,37 @@ app.initializers.add('retechvn/mediated-transaction', () => {
       </LinkButton>,
       100
     );
-  // }
+    // }
   });
 
   // Hiển thị tiển ở trên header
   extend(HeaderSecondary.prototype, 'items', function (items) {
-    if (app.session && app.session.user && app.session.user.isAdmin()) {
-      items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), ` ${app.session.user.attribute('rvn_point')} RTC`]), 15);
-    }
+    // if (app.session && app.session.user && app.session.user.isAdmin()) {
+    items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), ` ${app.session.user.attribute('rvn_point')} RTC`]), 15);
+    // }
   });
-  
-  // Hiển thị lịch sử giao dịch trong trang cá nhân
-  extend(UserPage.prototype, "navItems", function (items,user) {
-    if(app.session.user){
-      const currentUserID = app.session.user.id();
-      const targetUserID = this.user.id();
 
-      if(currentUserID==targetUserID){
-        items.add(
-          "transactionMoney",
-          LinkButton.component({
-              href: app.route("user.transactionHistoryPage", {
-                username: this.user.username(),
-              }),
-              icon: "fas fa-money-bill",
-            },
-            [
-              "Lịch sử giao dịch"
-            ]
-          ),
-          10
-        );
-      }
+  // Hiển thị lịch sử giao dịch trong trang cá nhân
+  extend(UserPage.prototype, 'navItems', function (items, user) {
+    // if(app.session.user){
+    const currentUserID = app.session.user.id();
+    const targetUserID = this.user.id();
+
+    if (currentUserID == targetUserID) {
+      items.add(
+        'transactionMoney',
+        LinkButton.component(
+          {
+            href: app.route('user.transactionHistoryPage', {
+              username: this.user.username(),
+            }),
+            icon: 'fas fa-money-bill',
+          },
+          ['Lịch sử giao dịch']
+        ),
+        10
+      );
     }
-});
+    // }
+  });
 });
