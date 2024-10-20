@@ -274,9 +274,9 @@ export default class TransactionPage extends Page {
   onsubmit(event) {
     event.preventDefault();
 
-    if (!this.validateForm()) {
-      return;
-    }
+    // if (!this.validateForm()) {
+    //   return;
+    // }
 
     this.loading = true;
 
@@ -290,7 +290,6 @@ export default class TransactionPage extends Page {
     };
     console.log(data);
 
-    const confirm = false;
     app.modal.show(QRModal, {  
       onsubmit: (confirm) => {
         confirm = confirm;

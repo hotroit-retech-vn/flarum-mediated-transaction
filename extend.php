@@ -13,6 +13,8 @@ namespace RetechVN\MediatedTransaction;
 
 use Flarum\Extend;
 use Flarum\Api\Serializer\UserSerializer;
+use RetechVN\MediatedTransaction\Api\Serializer\TransactionSerializer;
+use RetechVN\MediatedTransaction\Notification\TransactionBlueprint;
 
 return [
     (new Extend\Frontend('forum'))
@@ -33,5 +35,9 @@ return [
         ->get('/transactions/{id}', 'transactions.show', Api\Controller\ShowTransactionController::class)
         ->post('/transactions', 'transactions.create', Api\Controller\CreateTransactionController::class)
         ->patch('/transactions/{id}', 'transactions.update', Api\Controller\UpdateTransactionController::class)
-        ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class),
+        ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class)
+        ->get('/transaction-logs', 'transaction-logs.index', Api\Controller\ListTransactionLogsController::class)
+        ->get('/transaction-logs/{id}', 'transaction-logs.show', Api\Controller\ShowTransactionLogsController::class),
+    (new Extend\Notification())
+        ->type(TransactionBlueprint::class, TransactionSerializer::class, ['alert']),
 ];

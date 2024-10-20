@@ -227,6 +227,52 @@ var TransactionHistoryPage = /*#__PURE__*/function (_UserPage) {
 
 /***/ }),
 
+/***/ "./src/forum/components/TransactionNotification.js":
+/*!*********************************************************!*\
+  !*** ./src/forum/components/TransactionNotification.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ TransactionNotification)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/forum/app */ "flarum/forum/app");
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_app__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_Notification__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/Notification */ "flarum/components/Notification");
+/* harmony import */ var flarum_components_Notification__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Notification__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_common_helpers_username__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/common/helpers/username */ "flarum/common/helpers/username");
+/* harmony import */ var flarum_common_helpers_username__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_common_helpers_username__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var TransactionNotification = /*#__PURE__*/function (_Notification) {
+  function TransactionNotification() {
+    return _Notification.apply(this, arguments) || this;
+  }
+  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(TransactionNotification, _Notification);
+  var _proto = TransactionNotification.prototype;
+  _proto.icon = function icon() {
+    return 'fas fa-money-bill';
+  };
+  _proto.href = function href() {
+    return flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().route('transactions');
+  };
+  _proto.content = function content() {
+    var user = this.attrs.notification.fromUser();
+    return flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().translator.trans('retechvn-mediated-transaction.forum.notifications.user-transfer-money-to-you', {
+      user: user
+    });
+  };
+  return TransactionNotification;
+}((flarum_components_Notification__WEBPACK_IMPORTED_MODULE_2___default()));
+
+
+/***/ }),
+
 /***/ "./src/forum/components/TransactionPage.js":
 /*!*************************************************!*\
   !*** ./src/forum/components/TransactionPage.js ***!
@@ -508,9 +554,11 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
   _proto.onsubmit = function onsubmit(event) {
     var _this9 = this;
     event.preventDefault();
-    if (!this.validateForm()) {
-      return;
-    }
+
+    // if (!this.validateForm()) {
+    //   return;
+    // }
+
     this.loading = true;
     var data = {
       rvn_creator_id: Number(this.data.rvn_creator_id),
@@ -521,7 +569,6 @@ var TransactionPage = /*#__PURE__*/function (_Page) {
       rvn_note: this.data.rvn_note
     };
     console.log(data);
-    var confirm = false;
     flarum_forum_app__WEBPACK_IMPORTED_MODULE_1___default().modal.show(_QRModal__WEBPACK_IMPORTED_MODULE_7__["default"], {
       onsubmit: function onsubmit(confirm) {
         confirm = confirm;
@@ -573,6 +620,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_UserPage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/components/UserPage */ "flarum/components/UserPage");
 /* harmony import */ var flarum_components_UserPage__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_components_UserPage__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _components_TransactionHistoryPage__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/TransactionHistoryPage */ "./src/forum/components/TransactionHistoryPage.js");
+/* harmony import */ var _components_TransactionNotification__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/TransactionNotification */ "./src/forum/components/TransactionNotification.js");
+/* harmony import */ var flarum_components_NotificationGrid__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! flarum/components/NotificationGrid */ "flarum/components/NotificationGrid");
+/* harmony import */ var flarum_components_NotificationGrid__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(flarum_components_NotificationGrid__WEBPACK_IMPORTED_MODULE_9__);
 
 
 
@@ -580,6 +630,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+// import NotificationGrid from 'flarum/forum/components/NotificationGrid';
 
 flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().initializers.add('retechvn/mediated-transaction', function () {
   (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().routes).transactionPage = {
@@ -590,38 +643,56 @@ flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().initializers.add('retech
     path: '/u/:username/lich-su-giao-dich',
     component: _components_TransactionHistoryPage__WEBPACK_IMPORTED_MODULE_7__["default"]
   };
+  (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().notificationComponents).transactions = _components_TransactionNotification__WEBPACK_IMPORTED_MODULE_8__["default"];
+
+  // Thông báo khi nhân tiền
+  // extend(NotificationGrid.prototype, 'notificationTypes', (items) => {
+  //   items.add('transactions', {
+  //     name: 'transactions',
+  //     icon: 'fas fa-dollar-sign',
+  //     label: 'Nhận tiền từ user 1',
+  //   });
+  // });
+
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_2__.extend)((flarum_components_NotificationGrid__WEBPACK_IMPORTED_MODULE_9___default().prototype), 'notificationTypes', function (items) {
+    items.add('transactions', {
+      name: 'transactions',
+      icon: 'far fa-thumbs-up',
+      label: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('retechvn-mediated-transaction.forum.settings.noti-new-transaction')
+    });
+  });
 
   // Thêm nút Giao dịch trung gian ở navItems
   (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_2__.extend)((flarum_components_IndexPage__WEBPACK_IMPORTED_MODULE_3___default().prototype), 'navItems', function (items) {
-    // if (app.session && app.session.user && app.session.user.isAdmin()) {
-    items.add('transactionPage', m((flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default()), {
-      href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('transactionPage'),
-      icon: "fas fa-magic"
-    }, 'Giao dịch trung gian'), 100);
-    // }
+    if ((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session) && (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user && (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user) {
+      items.add('transactionPage', m((flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default()), {
+        href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('transactionPage'),
+        icon: "fas fa-magic"
+      }, 'Giao dịch trung gian'), 100);
+    }
   });
 
   // Hiển thị tiển ở trên header
   (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_2__.extend)((flarum_forum_components_HeaderSecondary__WEBPACK_IMPORTED_MODULE_5___default().prototype), 'items', function (items) {
-    // if (app.session && app.session.user && app.session.user.isAdmin()) {
-    items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), " " + flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session.user.attribute('rvn_point') + " RTC"]), 15);
-    // }
+    if ((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session) && (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user && (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user) {
+      items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), " " + flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session.user.attribute('rvn_point') + " RTC"]), 15);
+    }
   });
 
   // Hiển thị lịch sử giao dịch trong trang cá nhân
   (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_2__.extend)((flarum_components_UserPage__WEBPACK_IMPORTED_MODULE_6___default().prototype), 'navItems', function (items, user) {
-    // if(app.session.user){
-    var currentUserID = flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session.user.id();
-    var targetUserID = this.user.id();
-    if (currentUserID == targetUserID) {
-      items.add('transactionMoney', flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default().component({
-        href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('user.transactionHistoryPage', {
-          username: this.user.username()
-        }),
-        icon: 'fas fa-money-bill'
-      }, ['Lịch sử giao dịch']), 10);
+    if ((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session) && (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user) {
+      var currentUserID = flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session.user.id();
+      var targetUserID = this.user.id();
+      if (currentUserID == targetUserID) {
+        items.add('transactionMoney', flarum_components_LinkButton__WEBPACK_IMPORTED_MODULE_1___default().component({
+          href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('user.transactionHistoryPage', {
+            username: this.user.username()
+          }),
+          icon: 'fas fa-money-bill'
+        }, ['Lịch sử giao dịch']), 10);
+      }
     }
-    // }
   });
 });
 
@@ -693,6 +764,17 @@ module.exports = flarum.core.compat['common/extend'];
 
 /***/ }),
 
+/***/ "flarum/common/helpers/username":
+/*!****************************************************************!*\
+  !*** external "flarum.core.compat['common/helpers/username']" ***!
+  \****************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = flarum.core.compat['common/helpers/username'];
+
+/***/ }),
+
 /***/ "flarum/components/Button":
 /*!**********************************************************!*\
   !*** external "flarum.core.compat['components/Button']" ***!
@@ -745,6 +827,28 @@ module.exports = flarum.core.compat['components/LoadingIndicator'];
 
 "use strict";
 module.exports = flarum.core.compat['components/Modal'];
+
+/***/ }),
+
+/***/ "flarum/components/Notification":
+/*!****************************************************************!*\
+  !*** external "flarum.core.compat['components/Notification']" ***!
+  \****************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = flarum.core.compat['components/Notification'];
+
+/***/ }),
+
+/***/ "flarum/components/NotificationGrid":
+/*!********************************************************************!*\
+  !*** external "flarum.core.compat['components/NotificationGrid']" ***!
+  \********************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = flarum.core.compat['components/NotificationGrid'];
 
 /***/ }),
 

@@ -7,6 +7,9 @@ import HeaderSecondary from 'flarum/forum/components/HeaderSecondary';
 
 import UserPage from 'flarum/components/UserPage';
 import TransactionHistoryPage from './components/TransactionHistoryPage';
+import TransactionNotification from './components/TransactionNotification';
+// import NotificationGrid from 'flarum/forum/components/NotificationGrid';
+import NotificationGrid from "flarum/components/NotificationGrid";
 
 app.initializers.add('retechvn/mediated-transaction', () => {
   app.routes.transactionPage = {
@@ -19,47 +22,67 @@ app.initializers.add('retechvn/mediated-transaction', () => {
     component: TransactionHistoryPage,
   };
 
+  app.notificationComponents.transactions = TransactionNotification;
+
+
+  // Thông báo khi nhân tiền
+  // extend(NotificationGrid.prototype, 'notificationTypes', (items) => {
+  //   items.add('transactions', {
+  //     name: 'transactions',
+  //     icon: 'fas fa-dollar-sign',
+  //     label: 'Nhận tiền từ user 1',
+  //   });
+  // });
+
+  extend(NotificationGrid.prototype, 'notificationTypes', function (items) {
+    items.add('transactions', {
+      name: 'transactions',
+      icon: 'far fa-thumbs-up',
+      label: app.translator.trans('retechvn-mediated-transaction.forum.settings.noti-new-transaction')
+    });
+  });
+
   // Thêm nút Giao dịch trung gian ở navItems
   extend(IndexPage.prototype, 'navItems', (items) => {
-    // if (app.session && app.session.user && app.session.user.isAdmin()) {
-    items.add(
-      'transactionPage',
-      <LinkButton href={app.route('transactionPage')} icon="fas fa-magic">
-        {'Giao dịch trung gian'}
-      </LinkButton>,
-      100
-    );
-    // }
+    if (app.session && app.session.user && app.session.user) {
+      items.add(
+        'transactionPage',
+        <LinkButton href={app.route('transactionPage')} icon="fas fa-magic">
+          {'Giao dịch trung gian'}
+        </LinkButton>,
+        100
+      );
+    }
   });
 
   // Hiển thị tiển ở trên header
   extend(HeaderSecondary.prototype, 'items', function (items) {
-    // if (app.session && app.session.user && app.session.user.isAdmin()) {
-    items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), ` ${app.session.user.attribute('rvn_point')} RTC`]), 15);
-    // }
+    if (app.session && app.session.user && app.session.user) {
+      items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), ` ${app.session.user.attribute('rvn_point')} RTC`]), 15);
+    }
   });
 
   // Hiển thị lịch sử giao dịch trong trang cá nhân
   extend(UserPage.prototype, 'navItems', function (items, user) {
-    // if(app.session.user){
-    const currentUserID = app.session.user.id();
-    const targetUserID = this.user.id();
+    if (app.session && app.session.user) {
+      const currentUserID = app.session.user.id();
+      const targetUserID = this.user.id();
 
-    if (currentUserID == targetUserID) {
-      items.add(
-        'transactionMoney',
-        LinkButton.component(
-          {
-            href: app.route('user.transactionHistoryPage', {
-              username: this.user.username(),
-            }),
-            icon: 'fas fa-money-bill',
-          },
-          ['Lịch sử giao dịch']
-        ),
-        10
-      );
+      if (currentUserID == targetUserID) {
+        items.add(
+          'transactionMoney',
+          LinkButton.component(
+            {
+              href: app.route('user.transactionHistoryPage', {
+                username: this.user.username(),
+              }),
+              icon: 'fas fa-money-bill',
+            },
+            ['Lịch sử giao dịch']
+          ),
+          10
+        );
+      }
     }
-    // }
   });
 });
