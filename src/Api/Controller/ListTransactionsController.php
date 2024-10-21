@@ -6,56 +6,51 @@ use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Psr\Http\Message\ServerRequestInterface;
+use RetechVN\MediatedTransaction\Transaction;
 use Tobscure\JsonApi\Document;
 use RetechVN\MediatedTransaction\Api\Serializer\TransactionSerializer;
 
 class ListTransactionsController extends AbstractListController
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public $serializer = TransactionSerializer::class;
 
-    /**
-     * @var UrlGenerator
-     */
     protected $url;
 
-    /**
-     * @param UrlGenerator $url
-     */
     public function __construct(UrlGenerator $url)
     {
         $this->url = $url;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        // See https://docs.flarum.org/extend/api.html#api-endpoints for more information.
-
         $actor = RequestUtil::getActor($request);
-
-        $filters = $this->extractFilter($request);
-        $sort = $this->extractSort($request);
-
         $limit = $this->extractLimit($request);
         $offset = $this->extractOffset($request);
-        $include = $this->extractInclude($request);
 
-        // ...
-        // $results = ...;
+        $userID = $actor->id;
+        $transactionQuery = Transaction::with(['creator', 'receiver', 'logs'])
+            ->where('rvn_creator_id', $userID)
+            ->orWhere('rvn_receiver_id', $userID);
+        $transactionResult = $transactionQuery
+            ->skip($offset)
+            ->take($limit + 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
+        $results = $limit > 0 && $transactionResult->count() > $limit;
+
+        if ($results) {
+            $transactionResult->pop();
+        }
         $document->addPaginationLinks(
-            $this->url->to('api')->route('...'),
+            $this->url->to('api')->route('transactions.index'),
             $request->getQueryParams(),
             $offset,
             $limit,
-            $results->areMoreResults() ? null : 0
+            $results ? null : 0
         );
 
-        return $results;
+        return $transactionResult;
     }
 }

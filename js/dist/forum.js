@@ -101,13 +101,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_LoadingIndicator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_LoadingIndicator__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
 /* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/common/components/Dropdown */ "flarum/common/components/Dropdown");
+/* harmony import */ var flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
 
 
 
-// import TransferHistoryListItem from "./TransferHistoryListItem";
 var TransactionHistoryList = /*#__PURE__*/function (_Component) {
   function TransactionHistoryList() {
     return _Component.apply(this, arguments) || this;
@@ -117,51 +118,92 @@ var TransactionHistoryList = /*#__PURE__*/function (_Component) {
   _proto.oninit = function oninit(vnode) {
     _Component.prototype.oninit.call(this, vnode);
     this.loading = true;
-    // this.moreResults = false;
-    // this.transferHistory = [];
-    // this.user = this.attrs.params.user;
-    // this.loadResults();
+    this.moreResults = false;
+    this.transactionHistory = [];
+    this.user = this.attrs.params.user;
+    this.loadResults();
   };
   _proto.view = function view() {
-    var _this = this;
     var loading;
+    console.log(this.transactionHistory);
     if (this.loading) {
       loading = flarum_components_LoadingIndicator__WEBPACK_IMPORTED_MODULE_3___default().component({
-        size: "large"
+        size: 'large'
       });
     }
     return m("div", null, m("div", {
       style: "padding-bottom:10px; font-size: 24px;font-weight: bold;"
-    }, "L\u1ECBch s\u1EED giao d\u1ECBch"), m("ul", {
-      style: "margin: 0;padding: 0;list-style-type: none;position: relative;"
-    }, this.transferHistory.map(function (transferHistory) {
-      return m("li", {
-        style: "padding-top:5px",
-        key: transferHistory.id(),
-        "data-id": transferHistory.id()
-      }, TransferHistoryListItem.component({
-        transferHistory: transferHistory
-      }));
-    })), !this.loading && this.transferHistory.length === 0 && m("div", null, m("div", {
-      style: "font-size:1.4em;color: var(--muted-more-color);text-align: center;height: 300px;line-height: 100px;"
-    }, flarum_app__WEBPACK_IMPORTED_MODULE_2___default().translator.trans("ziven-transfer-money.forum.transfer-list-empty"))), this.hasMoreResults() && m("div", {
-      style: "text-align:center;padding:20px"
-    }, m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_4___default()), {
-      className: 'Button Button--primary',
-      disabled: this.loading,
-      loading: this.loading,
-      onclick: function onclick() {
-        return _this.loadMore();
-      }
-    }, flarum_app__WEBPACK_IMPORTED_MODULE_2___default().translator.trans('ziven-transfer-money.forum.transfer-list-load-more'))));
+    }, "L\u1ECBch s\u1EED giao d\u1ECBch"), m("div", {
+      "class": "sideNavContainer"
+    }, m("table", {
+      "class": "rvn__table"
+    }, m("thead", {
+      "class": "rvn__thead"
+    }, m("tr", {
+      "class": "rvn__tr"
+    }, m("th", {
+      "class": "rvn__th"
+    }, "STT"), m("th", {
+      "class": "rvn__th"
+    }, "Ng\u01B0\u1EDDi t\u1EA1o"), m("th", {
+      "class": "rvn__th"
+    }, "Ng\u01B0\u1EDDi nh\u1EADn"), m("th", {
+      "class": "rvn__th"
+    }, "Ng\u01B0\u1EDDi tr\u1EA3 ph\xED"), m("th", {
+      "class": "rvn__th"
+    }, "Ph\xED giao d\u1ECBch (%)"), m("th", {
+      "class": "rvn__th"
+    }, "T\u1ED5ng ti\u1EC1n"), m("th", {
+      "class": "rvn__th"
+    }, "Ng\xE0y t\u1EA1o"), m("th", {
+      "class": "rvn__th"
+    }, "Tr\u1EA1ng th\xE1i"), m("th", {
+      "class": "rvn__th",
+      style: "width:100px;"
+    }, "Chi ti\u1EBFt"))), m("tbody", {
+      "class": "rvn__tbody"
+    }, this.transactionHistory.map(function (transactionHistory, colIndex) {
+      return m("tr", {
+        "class": "rvn__tr",
+        key: transactionHistory.id,
+        "data-id": transactionHistory.id
+      }, m("td", {
+        "class": "rvn__td"
+      }, colIndex + 1), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.creator.username), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.receiver.username), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.rvn_payer_id == transactionHistory.attributes.rvn_receiver_id ? transactionHistory.attributes.receiver.username : transactionHistory.attributes.creator.username), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.rvn_fee * 100, " %"), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.rvn_amount + transactionHistory.attributes.rvn_amount * transactionHistory.attributes.rvn_fee), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.created_at), m("td", {
+        "class": "rvn__td"
+      }, transactionHistory.attributes.updated_at), m('td.rvn__td', m((flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5___default()), {
+        className: 'User-controls',
+        buttonClassName: 'Button Button--icon Button--flat',
+        menuClassName: 'Dropdown-menu--right',
+        icon: 'fas fa-ellipsis-h'
+      }, [m('button.Button.UserList-cancelBtn', {
+        title: 'Hủy'
+      }, ['Hủy']), m('button.Button.UserList-confirmBtn', {
+        title: 'Xác nhận'
+      }, ['Xác nhận']), m('button.Button.UserList-complaintsBtn', {
+        title: 'Khiếu nại'
+      }, ['Khiếu nại'])])));
+    })))));
   };
   _proto.loadMore = function loadMore() {
     this.loading = true;
-    this.loadResults(this.transferHistory.length);
+    this.loadResults(this.transactionHistory.length);
   };
   _proto.parseResults = function parseResults(results) {
     this.moreResults = !!results.payload.links && !!results.payload.links.next;
-    [].push.apply(this.transferHistory, results);
+    [].push.apply(this.transactionHistory, results.payload.data);
     this.loading = false;
     m.redraw();
     return results;
@@ -173,7 +215,7 @@ var TransactionHistoryList = /*#__PURE__*/function (_Component) {
     if (offset === void 0) {
       offset = 0;
     }
-    return flarum_app__WEBPACK_IMPORTED_MODULE_2___default().store.find("transferHistory", {
+    return flarum_app__WEBPACK_IMPORTED_MODULE_2___default().store.find('transactions', {
       filter: {
         user: this.user.id()
       },
@@ -219,7 +261,11 @@ var TransactionHistoryPage = /*#__PURE__*/function (_UserPage) {
   _proto.content = function content() {
     return m("div", {
       className: "TransferHistoryPage"
-    });
+    }, _TransactionHistoryList__WEBPACK_IMPORTED_MODULE_2__["default"].component({
+      params: {
+        user: this.user
+      }
+    }));
   };
   return TransactionHistoryPage;
 }((flarum_components_UserPage__WEBPACK_IMPORTED_MODULE_1___default()));
@@ -739,6 +785,17 @@ module.exports = flarum.core.compat['common/app'];
 
 "use strict";
 module.exports = flarum.core.compat['common/components/Alert'];
+
+/***/ }),
+
+/***/ "flarum/common/components/Dropdown":
+/*!*******************************************************************!*\
+  !*** external "flarum.core.compat['common/components/Dropdown']" ***!
+  \*******************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = flarum.core.compat['common/components/Dropdown'];
 
 /***/ }),
 

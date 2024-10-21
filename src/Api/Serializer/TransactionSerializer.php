@@ -21,8 +21,10 @@ class TransactionSerializer extends AbstractSerializer
             'rvn_fee' => $model->rvn_fee,
             'rvn_payer_id' => $model->rvn_payer_id,
             'rvn_note' => $model->rvn_note,
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at,
+            'created_at' => date("Y-m-d H:i:s", strtotime($model->created_at)),
+            'updated_at' => date("Y-m-d H:i:s", strtotime($model->updated_at)),
+            'creator' => $model->creator,
+            'receiver' => $model->receiver
         ];
         
         return $attributes;
@@ -34,4 +36,9 @@ class TransactionSerializer extends AbstractSerializer
     protected function receiver($transactionHistory) {
         return $this->hasOne($transactionHistory, BasicUserSerializer::class);
     }
+
+    protected function logs($transactionHistory) {
+        return $this->hasOne($transactionHistory, TransactionLogsSerializer::class);
+    }
+    
 }

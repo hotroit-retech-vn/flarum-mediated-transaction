@@ -15,14 +15,14 @@ class Transaction extends AbstractModel
     protected $table = 'rvn_transactions';
     public $timestamps = true; 
     public function creator(){
-        return $this->hasOne(User::class, 'id', 'rvn_creator_id');
+        return $this->belongsTo(User::class, 'rvn_creator_id');
     }
 
     public function receiver(){
-        return $this->hasOne(User::class, 'id', 'rvn_receiver_id');
+        return $this->belongsTo(User::class, 'rvn_receiver_id');
     }
 
-    public function transactionLogs(){
+    public function logs(){
         return $this->hasMany(TransactionLogs::class, 'rvn_transaction_id');
     }
 }
