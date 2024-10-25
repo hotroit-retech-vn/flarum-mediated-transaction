@@ -22,16 +22,25 @@ class TransactionLogsSerializer extends AbstractSerializer
      */
     protected function getDefaultAttributes($model)
     {
-        if (! ($model instanceof TransactionLogs)) {
-            throw new InvalidArgumentException(
-                get_class($this).' can only serialize instances of '.TransactionLogs::class
-            );
-        }
-
-        return $model;
+        $attributes = [
+            'id' => $model->id,
+            'rvn_transaction_id' => $model->rvn_transaction_id,
+            'rvn_user_id' => $model->rvn_user_id,
+            'rvn_status' => $model->rvn_status,
+            'rvn_reason' => $model->rvn_reason,
+            'created_at' => date("Y-m-d H:i:s", strtotime($model->created_at)),
+            'updated_at' => date("Y-m-d H:i:s", strtotime($model->updated_at)),
+            'creator' => $model->creator,
+            'transaction' =>  $model->transaction
+        ];
+        
+        return $attributes;
+    }
+    protected function transaction($transLog) {
+        return $this->hasOne($transLog, TransactionSerializer::class);
     }
 
-    protected function user($transactionHistory) {
-        return $this->hasOne($transactionHistory, BasicUserSerializer::class);
+    protected function creator($transLog) {
+        return $this->hasOne($transLog, BasicUserSerializer::class);
     }
 }

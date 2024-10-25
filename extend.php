@@ -36,8 +36,8 @@ return [
         ->post('/transactions', 'transactions.create', Api\Controller\CreateTransactionController::class)
         ->patch('/transactions/{id}', 'transactions.update', Api\Controller\UpdateTransactionController::class)
         ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class)
-        ->get('/transaction-logs', 'transaction-logs.index', Api\Controller\ListTransactionLogsController::class)
-        ->get('/transaction-logs/{id}', 'transaction-logs.show', Api\Controller\ShowTransactionLogsController::class),
+        ->get('/transaction-logs', 'transactionlogs.index', Api\Controller\ListTransactionLogsController::class)
+        ->get('/transaction-logs/{id}', 'transactionlogs.show', Api\Controller\ShowTransactionLogsController::class),
     (new Extend\Notification())
         ->type(TransactionBlueprint::class, TransactionSerializer::class, ['alert']),
 ];

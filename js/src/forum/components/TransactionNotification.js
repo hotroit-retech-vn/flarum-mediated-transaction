@@ -4,18 +4,17 @@ import username from 'flarum/common/helpers/username';
 
 export default class TransactionNotification extends Notification {
   icon() {
-    return 'fas fa-money-bill';
+    return 'fas fa-exchange-alt';
   }
 
   href() {
-    return app.route('transactions');
+    return app.route.transaction(this.attrs.notification.subject());
   }
 
   content() {
-    const user = this.attrs.notification.fromUser();
-    return app.translator.trans('retechvn-mediated-transaction.forum.notifications.user-transfer-money-to-you', {
-      user: user,
+    return app.translator.trans('retechvn-mediated-transaction.forum.notifications.transaction_created_text', {
+      user: this.attrs.notification.fromUser(),
+      transaction: this.attrs.notification.subject(),
     });
   }
-
 }

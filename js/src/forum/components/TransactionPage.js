@@ -19,7 +19,7 @@ export default class TransactionPage extends Page {
 
   initializeData() {
     this.data = {
-      rvn_creator_id: 1,
+      rvn_creator_id: this.user_current.data.id,
       rvn_receiver_id: '',
       rvn_amount: 0,
       rvn_fee: 0.1,
@@ -90,7 +90,10 @@ export default class TransactionPage extends Page {
         value: this.rvn_receiver_name_search,
         placeholder: placeholder,
         onfocus: () => (this.showDropdown = true),
-        onkeyup: (e) => this.handleSearch(e),
+        onkeyup: (e) => {
+          this.rvn_receiver_name_search = e.target.value;
+          setTimeout(() => this.search(e.target.value), 100);
+        },
       }),
       this.showDropdown && this.renderDropdown(),
     ]);
@@ -187,10 +190,6 @@ export default class TransactionPage extends Page {
     this.calculateTotal();
   }
 
-  handleSearch(e) {
-    this.rvn_receiver_name_search = e.target.value;
-    setTimeout(() => this.search(e.target.value), 1000);
-  }
 
   selectReceiver(user) {
     this.rvn_receiver_name = user.username();
@@ -246,14 +245,12 @@ export default class TransactionPage extends Page {
   search(query) {
     if (query.trim()) {
       app.store.find('users', { filter: { q: query } }).then((users) => {
-        this.resultsUser = users.filter((user) => user.data.id != this.data.rvn_creator_id);
+        this.resultsUser = users.filter((user) => user.data.id != this.user_current.id());
         this.showDropdown = true;
-        m.redraw();
       });
     } else {
       this.resultsUser = [];
       this.showDropdown = false;
-      m.redraw();
     }
   }
 

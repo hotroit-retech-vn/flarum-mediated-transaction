@@ -4,8 +4,7 @@ namespace RetechVN\MediatedTransaction;
 
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
-use Flarum\Extend\User;
-use Flarum\Foundation\EventGeneratorTrait;
+use Flarum\User\User;
 
 class TransactionLogs extends AbstractModel
 {
@@ -14,8 +13,10 @@ class TransactionLogs extends AbstractModel
     
     protected $table = 'rvn_transaction_logs';
     public $timestamps = true; 
-    public function user(){
-        return $this->hasOne(User::class, 'id', 'rvn_user_id');
+
+    protected $fillable = ['rvn_transaction_id', 'rvn_user_id', 'rvn_status', 'rvn_reason'];
+    public function creator(){
+        return $this->belongsTo(User::class, 'rvn_user_id');
     }
 
     public function transaction(){

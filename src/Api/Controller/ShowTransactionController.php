@@ -28,6 +28,6 @@ class ShowTransactionController extends AbstractShowController
 
         // $model = ...;
 
-        return $model;
+        // return $model;
     }
 }

@@ -4,7 +4,7 @@ retechvn-mediated-transaction:
 
   forum:
     notifications:
-      user-transfer-money-to-you: "{username} transfered money to you"
-      user-transfer-money-details: "You have recevied. Transfer ID：{id}"
+      transaction_created_text: "{user} đã tạo một giao dịch mới: {transaction}"
+      transaction_created_label: "Giao dịch mới"
     settings:
       noti-new-transaction: "Giao dịch"

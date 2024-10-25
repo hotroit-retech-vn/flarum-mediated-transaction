@@ -24,7 +24,8 @@ class TransactionSerializer extends AbstractSerializer
             'created_at' => date("Y-m-d H:i:s", strtotime($model->created_at)),
             'updated_at' => date("Y-m-d H:i:s", strtotime($model->updated_at)),
             'creator' => $model->creator,
-            'receiver' => $model->receiver
+            'receiver' => $model->receiver,
+            'latest_log_status' => $model->latestLog ? $model->latestLog->rvn_status : null,
         ];
         
         return $attributes;
@@ -38,7 +39,7 @@ class TransactionSerializer extends AbstractSerializer
     }
 
     protected function logs($transactionHistory) {
-        return $this->hasOne($transactionHistory, TransactionLogsSerializer::class);
+        return $this->hasMany($transactionHistory, TransactionLogsSerializer::class);
     }
     
 }

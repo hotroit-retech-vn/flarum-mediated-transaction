@@ -17,7 +17,7 @@ use Flarum\Notification\NotificationSyncer;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\User;
-
+use Illuminate\Support\Facades\Log;
 class CreateTransactionController extends AbstractCreateController
 {
     public $serializer = TransactionSerializer::class;
@@ -67,9 +67,10 @@ class CreateTransactionController extends AbstractCreateController
             $targetUserData->save();
 
             $this->notifications->sync(new TransactionBlueprint($transaction), [$targetUserData]);
+
             return [$transaction, $transactionLog];
         } catch (\Exception $th) {
-            var_dump($th);
+            // var_dump($th);
             return false;
         }
 

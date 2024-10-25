@@ -30,7 +30,7 @@ class TransactionBlueprint implements BlueprintInterface
 
     public static function getType()
     {
-        return 'transactions';
+        return 'transactionCreated';
     }
 
     public static function getSubjectModel()

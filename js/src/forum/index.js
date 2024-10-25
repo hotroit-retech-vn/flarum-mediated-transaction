@@ -22,25 +22,16 @@ app.initializers.add('retechvn/mediated-transaction', () => {
     component: TransactionHistoryPage,
   };
 
-  app.notificationComponents.transactions = TransactionNotification;
+  app.notificationComponents.transactionCreated = TransactionNotification;
 
-
-  // Thông báo khi nhân tiền
-  // extend(NotificationGrid.prototype, 'notificationTypes', (items) => {
-  //   items.add('transactions', {
-  //     name: 'transactions',
-  //     icon: 'fas fa-dollar-sign',
-  //     label: 'Nhận tiền từ user 1',
-  //   });
-  // });
-
-  extend(NotificationGrid.prototype, 'notificationTypes', function (items) {
-    items.add('transactions', {
-      name: 'transactions',
-      icon: 'far fa-thumbs-up',
-      label: app.translator.trans('retechvn-mediated-transaction.forum.settings.noti-new-transaction')
+  extend(NotificationGrid.prototype, 'notificationTypes', (items) => {
+    items.add('transactionCreated', {
+      name: 'transactionCreated',
+      icon: 'fas fa-exchange-alt',
+      label: app.translator.trans('retechvn-mediated-transaction.forum.notifications.transaction_created_label')
     });
   });
+
 
   // Thêm nút Giao dịch trung gian ở navItems
   extend(IndexPage.prototype, 'navItems', (items) => {
