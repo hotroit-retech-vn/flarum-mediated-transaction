@@ -9,7 +9,7 @@ import UserPage from 'flarum/components/UserPage';
 import TransactionHistoryPage from './components/TransactionHistoryPage';
 import TransactionNotification from './components/TransactionNotification';
 // import NotificationGrid from 'flarum/forum/components/NotificationGrid';
-import NotificationGrid from "flarum/components/NotificationGrid";
+import NotificationGrid from 'flarum/components/NotificationGrid';
 
 app.initializers.add('retechvn/mediated-transaction', () => {
   app.routes.transactionPage = {
@@ -28,10 +28,9 @@ app.initializers.add('retechvn/mediated-transaction', () => {
     items.add('transactionCreated', {
       name: 'transactionCreated',
       icon: 'fas fa-exchange-alt',
-      label: app.translator.trans('retechvn-mediated-transaction.forum.notifications.transaction_created_label')
+      label: app.translator.trans('retechvn-mediated-transaction.forum.notifications.transaction_created_label'),
     });
   });
-
 
   // Thêm nút Giao dịch trung gian ở navItems
   extend(IndexPage.prototype, 'navItems', (items) => {

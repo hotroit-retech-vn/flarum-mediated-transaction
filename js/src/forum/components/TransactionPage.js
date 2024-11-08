@@ -58,7 +58,12 @@ export default class TransactionPage extends Page {
     return m('.IndexPage-results.sideNavOffset', [
       m('div.retechvn__text-center', m('h2', 'Giao dịch trung gian')),
       m('.Modal-body.rvn__body-form .row', [
-        this.renderInput(`Tên đồ án`, 'Nhập tên đồ án',  this.rvn_creator_name + `${this.rvn_receiver_name != '' ? '__' +this.rvn_receiver_name : ''}`, true),
+        this.renderInput(
+          `Tên đồ án`,
+          'Nhập tên đồ án',
+          this.rvn_creator_name + `${this.rvn_receiver_name != '' ? '__' + this.rvn_receiver_name : ''}`,
+          true
+        ),
         this.renderReceiverInput('Tên đối tác', 'Nhập tên đối tác cần tìm kiếm'),
         this.renderNumberInput('Tiền thuê', this.data.rvn_amount, this.handleRentChange.bind(this)),
         this.renderInput(`Phí dịch vụ (${this.data.rvn_fee * 100}%)`, '', this.rvn_service_fee, true),
@@ -70,7 +75,6 @@ export default class TransactionPage extends Page {
       ]),
     ]);
   }
-
 
   renderInput(label, placeholder, value, disabled = false) {
     return m('.Form-group.col.col-md-6', [m('label', label), m('input.FormControl', { value, disabled, placeholder })]);
@@ -190,7 +194,6 @@ export default class TransactionPage extends Page {
     this.calculateTotal();
   }
 
-
   selectReceiver(user) {
     this.rvn_receiver_name = user.username();
     this.rvn_receiver_name_search = '';
@@ -287,11 +290,11 @@ export default class TransactionPage extends Page {
     };
     console.log(data);
 
-    app.modal.show(QRModal, {  
+    app.modal.show(QRModal, {
       onsubmit: (confirm) => {
         confirm = confirm;
         console.log(confirm);
-        
+
         app
           .request({
             method: 'POST',
@@ -300,19 +303,18 @@ export default class TransactionPage extends Page {
           })
           .then((response) => {
             console.log(response);
-    
+
             this.showAlert('success', 'Tạo giao dịch thành công!', 5000);
             this.initializeData();
             this.loading = false;
           })
           .catch((error) => {
             console.log(error);
-            
+
             this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
             this.loading = false;
           });
-        
-      }
-    })
+      },
+    });
   }
 }

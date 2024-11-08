@@ -7,27 +7,20 @@ export default class CancelTransactionModal extends Modal {
     super.oninit(vnode);
     this.transId = this.attrs.transId;
     console.log(this.attrs);
-    
   }
 
-  loadData(transID){
-    
-  }
+  loadData(transID) {}
 
   title() {
-    return "Hủy giao dịch";
+    return 'Hủy giao dịch';
   }
 
   content() {
-    return m('.Modal-body .row', 
-        <p> sdas</p>
-    );
+    return m('.Modal-body .row', <p> sdas</p>);
   }
 
   onsubmit(event) {
     event.preventDefault();
-
-
   }
 
   className() {
