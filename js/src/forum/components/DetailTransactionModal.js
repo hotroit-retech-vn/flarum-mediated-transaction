@@ -10,14 +10,6 @@ export default class DetailTransactionModal extends Modal {
     this.loading = true;
     this.moreResults = false;
     this.tranlogs = [];
-    this.statusText = {
-      1: 'Đang xử lý',
-      2: 'Thành công',
-      3: 'Kiếu nại',
-      4: 'Đã hủy',
-    };
-    console.log(this.attrs);
-
     this.loadData(this.transId);
   }
 
@@ -92,19 +84,23 @@ export default class DetailTransactionModal extends Modal {
   showText(currentId, creator, status, transaction) {
     let text = '';
     if (status == 1) {
-      text = `${creator.username} đã tạo giao dịch`;
+      text = `[${creator.username}] đã tạo giao dịch`;
     }
-    if (status == 2) {
-      text = `${creator.username} đã hoàn thành giao dịch`;
+    if (status == 2 ) {
+      text = `[${creator.username}] đã thanh toán giao dịch`;
     }
     if (status == 3) {
-      text = `${creator.username} đã gửi khiếu nại`;
+      text = `[${creator.username}] đã hoàn thành giao dịch`;
     }
     if (status == 4) {
-      text = `${creator.username} đã hủy giao dịch`;
+      text = `[${creator.username}] đã hủy giao dịch`;
+    }
+    if (status == 5) {
+      text = `[${creator.username}] đã khiếu nại giao dịch`;
     }
     return text;
   }
+
   onsubmit(event) {
     event.preventDefault();
   }

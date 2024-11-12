@@ -9,7 +9,7 @@ return [
         if (!$schema->hasTable('rvn_transaction_logs')) {
             $schema->create('rvn_transaction_logs', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('rvn_transaction_id');
+                $table->unsignedBigInteger('rvn_transaction_id')->nullable();;
                 $table->unsignedInteger('rvn_user_id');
                 $table->tinyInteger('rvn_status')->default(1);
                 $table->text('rvn_reason')->nullable();

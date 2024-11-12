@@ -15,11 +15,44 @@ export default class TransactionHistoryList extends Component {
     this.user = this.attrs.params.user;
     this.statusText = {
       1: 'Đang xử lý',
-      2: 'Thành công',
-      3: 'Kiếu nại',
-      4: 'Đã hủy',
+      2: 'Thanh toán',
+      3: 'Hoàn thành',
+      4: 'Kiếu nại',
+      5: 'Đã hủy',
     };
     this.loadResults();
+  }
+
+  getTotalMonny() {}
+
+  getStatus(status, banks, monney, creator_id) {
+    if (!banks && banks.length <= 0) return 1;
+    let totalMonney = banks.reduce((total, transaction) => {
+      return total + parseFloat(transaction.rvn_amount);
+    }, 0);
+    let balance = totalMonney - monney;
+    let isCurrent = this.user == creator_id ? true : false;
+    if (balance >= 0) {
+      if (status == 1 || status == 2) {
+        return 2;
+      }
+      if (status == 3) {
+        return 3;
+      }
+    }
+    if (status == 4) {
+      return 4;
+    }
+    if (status == 5) {
+      return 5;
+    }
+    return 1;
+  }
+
+  showStatusText(status) {
+    if (status == 3) return 'Hoàn thành';
+    if (status == 5) return 'Đã hủy';
+    return 'Đang xử lý';
   }
 
   view() {
@@ -54,6 +87,14 @@ export default class TransactionHistoryList extends Component {
 
             <tbody class="rvn__tbody">
               {this.transactionHistory.map((transac, colIndex) => {
+                let paid = this.showPrice(
+                  this.user.id,
+                  transac.attributes.creator.id,
+                  transac.attributes.rvn_payer_id,
+                  transac.attributes.rvn_amount,
+                  transac.attributes.rvn_fee
+                );
+                let checkStatus = this.getStatus(transac.attributes.latest_log_status, transac.attributes.banks, paid, transac.attributes.creator.id);
                 return (
                   <tr class="rvn__tr" key={transac.id} data-id={transac.id}>
                     <td class="rvn__td">{colIndex + 1}</td>
@@ -69,7 +110,7 @@ export default class TransactionHistoryList extends Component {
                     <td class="rvn__td">
                       {this.formatCurrency(transac.attributes.rvn_amount + transac.attributes.rvn_amount * transac.attributes.rvn_fee)}
                     </td>
-                    <td class="rvn__td">{this.statusText[transac.attributes.latest_log_status]}</td>
+                    <td class="rvn__td">{this.showStatusText(checkStatus)}</td>
                     <td class="rvn__td">{transac.attributes.created_at}</td>
 
                     {m(
@@ -92,7 +133,7 @@ export default class TransactionHistoryList extends Component {
                             ['Xem chi tiết']
                           ),
 
-                          transac.attributes.latest_log_status == 1
+                          checkStatus == 2 || checkStatus == 5
                             ? m(
                                 'button.Button.UserList-confirmBtn',
                                 {
@@ -102,7 +143,7 @@ export default class TransactionHistoryList extends Component {
                                 ['Hoàn thành']
                               )
                             : '',
-                          transac.attributes.latest_log_status == 1
+                          checkStatus == 1 || checkStatus == 2 || checkStatus == 5
                             ? m(
                                 'button.Button.UserList-cancelBtn',
                                 {
@@ -112,7 +153,7 @@ export default class TransactionHistoryList extends Component {
                                 ['Hủy']
                               )
                             : '',
-                          transac.attributes.latest_log_status == 1
+                          checkStatus == 1 || checkStatus == 2 || checkStatus == 3
                             ? m(
                                 'button.Button.UserList-complaintsBtn',
                                 {
@@ -140,17 +181,15 @@ export default class TransactionHistoryList extends Component {
     this.loadResults(this.transactionHistory.length);
   }
 
-  // showStatus(currentID, creatorID, )
-
   showPrice(currentID, creatorId, playFee, price, fee) {
     if (creatorId == currentID && currentID == playFee) {
-      return this.formatCurrency(fee * price);
+      return fee * price;
     } else if (creatorId == currentID && currentID != playFee) {
-      return this.formatCurrency(0);
+      return 0;
     } else if (creatorId != currentID && currentID == playFee) {
-      return this.formatCurrency(price + fee * price);
+      return price + fee * price;
     } else {
-      return this.formatCurrency(price);
+      return price;
     }
   }
 
@@ -169,6 +208,8 @@ export default class TransactionHistoryList extends Component {
 
   parseResults(results) {
     this.moreResults = !!results.payload.links && !!results.payload.links.next;
+    console.log(results.payload.data);
+
     [].push.apply(this.transactionHistory, results.payload.data);
     this.loading = false;
     m.redraw();

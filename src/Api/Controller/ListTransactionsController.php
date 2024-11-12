@@ -29,7 +29,7 @@ class ListTransactionsController extends AbstractListController
         $offset = $this->extractOffset($request);
 
         $userID = $actor->id;
-        $transactionQuery = Transaction::with(['creator', 'receiver', 'latestLog'])
+        $transactionQuery = Transaction::with(['creator', 'receiver', 'latestLog', 'banks', 'logs'])
             ->where('rvn_creator_id', $userID)
             ->orWhere('rvn_receiver_id', $userID);
         $transactionResult = $transactionQuery

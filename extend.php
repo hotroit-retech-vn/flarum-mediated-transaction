@@ -37,7 +37,7 @@ return [
         ->patch('/transactions/{id}', 'transactions.update', Api\Controller\UpdateTransactionController::class)
         ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class)
         ->get('/transaction-logs', 'transactionlogs.index', Api\Controller\ListTransactionLogsController::class)
-        ->get('/transaction-logs/{id}', 'transactionlogs.show', Api\Controller\ShowTransactionLogsController::class),
+        ->get('/checkBank', 'banktransactions.index', Api\Controller\GetMonneyBankByTransaction::class),
     (new Extend\Notification())
         ->type(TransactionBlueprint::class, TransactionSerializer::class, ['alert']),
 ];

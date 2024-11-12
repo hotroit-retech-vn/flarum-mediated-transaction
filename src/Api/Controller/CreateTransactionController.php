@@ -4,20 +4,17 @@ namespace RetechVN\MediatedTransaction\Api\Controller;
 
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use RetechVN\MediatedTransaction\Notification\TransactionBlueprint;
 use RetechVN\MediatedTransaction\Transaction;
 use RetechVN\MediatedTransaction\TransactionLogs;
 use Tobscure\JsonApi\Document;
-use RetechVN\MediatedTransaction\Command\CreateTransaction;
 use RetechVN\MediatedTransaction\Api\Serializer\TransactionSerializer;
 use Flarum\Notification\NotificationSyncer;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\User;
-use Illuminate\Support\Facades\Log;
 class CreateTransactionController extends AbstractCreateController
 {
     public $serializer = TransactionSerializer::class;
@@ -62,22 +59,17 @@ class CreateTransactionController extends AbstractCreateController
             $transactionLog->rvn_user_id = $transaction->rvn_creator_id;
             $transactionLog->save();
 
-            $targetUserData = User::find($transaction->rvn_creator_id);
-            $targetUserData->rvn_point -= $transaction->rvn_amount;
-            $targetUserData->save();
-
-            $this->notifications->sync(new TransactionBlueprint($transaction), [$targetUserData]);
+            // $this->notifications->sync(new TransactionBlueprint($transaction), [$targetUserData]);
 
             return [$transaction, $transactionLog];
         } catch (\Exception $th) {
-            // var_dump($th);
-            return false;
+            $errorMessage = $th;
         }
 
 
 
         if ($errorMessage !== "") {
-            throw new ValidationException(['message' => $this->translator->trans($errorMessage)]);
+            throw new ValidationException(['message' => $errorMessage]);
         }
     }
 }

@@ -35,4 +35,9 @@ class Transaction extends AbstractModel
         return $this->hasOne(TransactionLogs::class, 'rvn_transaction_id')->latest();
     }
 
+    public function banks()
+    {
+        return $this->hasMany(BankTransaction::class, 'rvn_transaction_id');
+    }
+
 }

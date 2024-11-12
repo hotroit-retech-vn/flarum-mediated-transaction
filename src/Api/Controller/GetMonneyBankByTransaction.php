@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 use RetechVN\MediatedTransaction\Api\Serializer\TransactionLogsSerializer;
 
-class ShowTransactionLogsController extends AbstractShowController
+class GetMonneyBankByTransaction extends AbstractShowController
 {
     /**
      * {@inheritdoc}

@@ -8,8 +8,10 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
-use RetechVN\MediatedTransaction\Command\EditTransaction;
 use RetechVN\MediatedTransaction\Api\Serializer\TransactionSerializer;
+use Flarum\Foundation\ValidationException;
+use RetechVN\MediatedTransaction\Transaction;
+use RetechVN\MediatedTransaction\TransactionLogs;
 
 class UpdateTransactionController extends AbstractShowController
 {
@@ -40,11 +42,29 @@ class UpdateTransactionController extends AbstractShowController
         $actor = RequestUtil::getActor($request);
         $modelId = Arr::get($request->getQueryParams(), 'id');
         $data = Arr::get($request->getParsedBody(), 'data', []);
-        
-        $model = $this->bus->dispatch(
-            new EditTransaction($modelId, $actor, $data)
-        );
-        
-        return $model;
+
+        $requestData = Arr::get($request->getParsedBody(), 'data');
+        $rvnCreatorID = intval($requestData['rvn_status']);
+        $actor = RequestUtil::getActor($request);
+        $errorMessage = "";
+
+        $currentUserData = Transaction::find($currentUserID);
+        // $allowUsePoint = $currentUserData
+
+        try {
+            $transactionLog = new TransactionLogs();
+            $transactionLog->rvn_status = $transaction->id;
+            $transactionLog->save();
+
+            return $transactionLog;
+        } catch (\Exception $th) {
+            $errorMessage = $th;
+        }
+
+
+
+        if ($errorMessage !== "") {
+            throw new ValidationException(['message' => $errorMessage]);
+        }
     }
 }

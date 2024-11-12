@@ -26,8 +26,10 @@ class TransactionSerializer extends AbstractSerializer
             'creator' => $model->creator,
             'receiver' => $model->receiver,
             'latest_log_status' => $model->latestLog ? $model->latestLog->rvn_status : null,
+            'banks' => $model->banks ? $model->banks : [],
+            'logs' => $model->logs ? $model->logs : []
         ];
-        
+
         return $attributes;
     }
 
@@ -41,5 +43,5 @@ class TransactionSerializer extends AbstractSerializer
     protected function logs($transactionHistory) {
         return $this->hasMany($transactionHistory, TransactionLogsSerializer::class);
     }
-    
+
 }

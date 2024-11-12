@@ -288,7 +288,6 @@ export default class TransactionPage extends Page {
       rvn_payer_id: Number(this.data.rvn_payer_id),
       rvn_note: this.data.rvn_note,
     };
-    console.log(data);
 
     app.modal.show(QRModal, {
       onsubmit: (confirm) => {
