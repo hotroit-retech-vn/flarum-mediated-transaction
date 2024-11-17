@@ -291,9 +291,6 @@ export default class TransactionPage extends Page {
 
     app.modal.show(QRModal, {
       onsubmit: (confirm) => {
-        confirm = confirm;
-        console.log(confirm);
-
         app
           .request({
             method: 'POST',
@@ -301,8 +298,6 @@ export default class TransactionPage extends Page {
             body: { data },
           })
           .then((response) => {
-            console.log(response);
-
             this.showAlert('success', 'Tạo giao dịch thành công!', 5000);
             this.initializeData();
             this.loading = false;

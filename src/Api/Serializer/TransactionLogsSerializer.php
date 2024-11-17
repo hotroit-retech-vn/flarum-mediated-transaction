@@ -27,13 +27,14 @@ class TransactionLogsSerializer extends AbstractSerializer
             'rvn_transaction_id' => $model->rvn_transaction_id,
             'rvn_user_id' => $model->rvn_user_id,
             'rvn_status' => $model->rvn_status,
+            'rvn_status_old' => $model->rvn_status_old,
             'rvn_reason' => $model->rvn_reason,
             'created_at' => date("Y-m-d H:i:s", strtotime($model->created_at)),
             'updated_at' => date("Y-m-d H:i:s", strtotime($model->updated_at)),
             'creator' => $model->creator,
             'transaction' =>  $model->transaction
         ];
-        
+
         return $attributes;
     }
     protected function transaction($transLog) {

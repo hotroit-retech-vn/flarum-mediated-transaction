@@ -21,13 +21,17 @@ class TransactionSerializer extends AbstractSerializer
             'rvn_fee' => $model->rvn_fee,
             'rvn_payer_id' => $model->rvn_payer_id,
             'rvn_note' => $model->rvn_note,
+            'rvn_status' => $model->rvn_status,
             'created_at' => date("Y-m-d H:i:s", strtotime($model->created_at)),
             'updated_at' => date("Y-m-d H:i:s", strtotime($model->updated_at)),
             'creator' => $model->creator,
             'receiver' => $model->receiver,
             'latest_log_status' => $model->latestLog ? $model->latestLog->rvn_status : null,
             'banks' => $model->banks ? $model->banks : [],
-            'logs' => $model->logs ? $model->logs : []
+            // 'logs' => $model->logs ? $model->logs : [],
+            'sender_last_status' => $model->sender_last_status,
+            'receiver_last_status' => $model->receiver_last_status,
+
         ];
 
         return $attributes;

@@ -4,6 +4,7 @@ namespace RetechVN\MediatedTransaction\Api\Controller;
 
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
+use Flarum\User\Exception\NotAuthenticatedException;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use RetechVN\MediatedTransaction\Notification\TransactionBlueprint;
@@ -29,7 +30,11 @@ class CreateTransactionController extends AbstractCreateController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-
+        $actor = RequestUtil::getActor($request);
+        if ($actor->isGuest()) {
+            throw new NotAuthenticatedException();
+        }
+        $userId = $actor->id;
         $requestData = Arr::get($request->getParsedBody(), 'data');
         $rvnCreatorID = intval($requestData['rvn_creator_id']);
         $rvnReceiverID = intval($requestData['rvn_receiver_id']);
@@ -37,12 +42,7 @@ class CreateTransactionController extends AbstractCreateController
         $rvnFee = trim($requestData['rvn_fee']);
         $rvnPayerID = intval($requestData['rvn_payer_id']);
         $rvnNote = trim($requestData['rvn_note']);
-        $currentUserID = $request->getAttribute('actor')->id;
-        $actor = RequestUtil::getActor($request);
         $errorMessage = "";
-
-        $currentUserData = User::find($currentUserID);
-        // $allowUsePoint = $currentUserData
 
         try {
             $transaction = new Transaction();

@@ -26,18 +26,14 @@ return [
         ->css(__DIR__ . '/less/admin.less')
         ->route('/giao-dich-trung-gian', 'retechvn/mediated-transaction'),
     new Extend\Locales(__DIR__ . '/locale'),
-    (new Extend\ApiSerializer(UserSerializer::class))
-        ->attribute('rvn_point', function (UserSerializer $serializer, $user, $attributes) {
-            return $user->rvn_point;
-        }),
     (new Extend\Routes('api'))
         ->get('/transactions', 'transactions.index', Api\Controller\ListTransactionsController::class)
-        ->get('/transactions/{id}', 'transactions.show', Api\Controller\ShowTransactionController::class)
+        ->get('/get-all-transactions', 'transactions.show', Api\Controller\ShowTransactionController::class)
         ->post('/transactions', 'transactions.create', Api\Controller\CreateTransactionController::class)
         ->patch('/transactions/{id}', 'transactions.update', Api\Controller\UpdateTransactionController::class)
         ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class)
         ->get('/transaction-logs', 'transactionlogs.index', Api\Controller\ListTransactionLogsController::class)
-        ->get('/checkBank', 'banktransactions.index', Api\Controller\GetMonneyBankByTransaction::class),
+        ->post('/transaction-logs', 'transactionlogs.create', Api\Controller\CreateTransactionLogsController::class),
     (new Extend\Notification())
         ->type(TransactionBlueprint::class, TransactionSerializer::class, ['alert']),
 ];

@@ -5,6 +5,7 @@ namespace RetechVN\MediatedTransaction\Api\Controller;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
+use Flarum\User\Exception\NotAuthenticatedException;
 use Psr\Http\Message\ServerRequestInterface;
 use RetechVN\MediatedTransaction\Transaction;
 use Tobscure\JsonApi\Document;
@@ -25,11 +26,15 @@ class ListTransactionsController extends AbstractListController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = RequestUtil::getActor($request);
+        if ($actor->isGuest()) {
+            throw new NotAuthenticatedException();
+        }
+        $userId = $actor->id;
         $limit = $this->extractLimit($request);
         $offset = $this->extractOffset($request);
 
         $userID = $actor->id;
-        $transactionQuery = Transaction::with(['creator', 'receiver', 'latestLog', 'banks', 'logs'])
+        $transactionQuery = Transaction::with(['creator', 'receiver', 'banks', 'logs'])
             ->where('rvn_creator_id', $userID)
             ->orWhere('rvn_receiver_id', $userID);
         $transactionResult = $transactionQuery

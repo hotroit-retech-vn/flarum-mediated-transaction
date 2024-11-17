@@ -14,7 +14,7 @@ class Transaction extends AbstractModel
 
     protected $table = 'rvn_transactions';
     public $timestamps = true;
-    protected $fillable = ['rvn_creator_id', 'rvn_receiver_id', 'rvn_amount', 'rvn_fee', 'rvn_payer_id', 'rvn_note'];
+    protected $fillable = ['rvn_creator_id', 'rvn_receiver_id', 'rvn_amount', 'rvn_fee', 'rvn_status', 'rvn_payer_id', 'rvn_note'];
     public function creator()
     {
         return $this->belongsTo(User::class, 'rvn_creator_id');
@@ -38,6 +38,22 @@ class Transaction extends AbstractModel
     public function banks()
     {
         return $this->hasMany(BankTransaction::class, 'rvn_transaction_id');
+    }
+
+    public function getSenderLastStatusAttribute()
+    {
+        return $this->logs()
+            ->where('rvn_user_id', $this->rvn_creator_id)
+            ->orderBy('created_at', 'desc')
+            ->value('rvn_status');
+    }
+
+    public function getReceiverLastStatusAttribute()
+    {
+        return $this->logs()
+            ->where('rvn_user_id', $this->rvn_receiver_id)
+            ->orderBy('created_at', 'desc')
+            ->value('rvn_status');
     }
 
 }

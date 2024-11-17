@@ -48,7 +48,7 @@ app.initializers.add('retechvn/mediated-transaction', () => {
   // Hiển thị tiển ở trên header
   extend(HeaderSecondary.prototype, 'items', function (items) {
     if (app.session && app.session.user && app.session.user) {
-      items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), ' 100.000.000 đ']), 15);
+      // items.add('techcoin', m('span.rvn__text-piece', [m('i.fas.fa-coins'), `${app.session.user.attribute('rvn_point')} đ`]), 15);
     }
   });
 

@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
+use Illuminate\Support\Facades\Schema;
 
-// See https://docs.flarum.org/extend/models.html#migrations to learn more about migrations.
 return [
     'up' => function (Builder $schema) {
         if (!$schema->hasTable('rvn_transactions')) {
@@ -15,6 +15,7 @@ return [
                 $table->decimal('rvn_fee', 3, 2)->default(0.10);
                 $table->unsignedInteger('rvn_payer_id')->nullable();
                 $table->text('rvn_note')->nullable();
+                $table->tinyInteger('rvn_status')->default(1);
 
                 $table->foreign('rvn_creator_id')->references('id')->on('users')->onDelete('cascade');
                 $table->foreign('rvn_receiver_id')->references('id')->on('users')->onDelete('cascade');
