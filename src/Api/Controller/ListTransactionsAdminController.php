@@ -6,12 +6,13 @@ use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\User\Exception\NotAuthenticatedException;
+use Intervention\Image\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use RetechVN\MediatedTransaction\Transaction;
 use Tobscure\JsonApi\Document;
 use RetechVN\MediatedTransaction\Api\Serializer\TransactionSerializer;
 
-class ListTransactionsController extends AbstractListController
+class ListTransactionsAdminController extends AbstractListController
 {
 
     public $serializer = TransactionSerializer::class;
@@ -26,16 +27,13 @@ class ListTransactionsController extends AbstractListController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = RequestUtil::getActor($request);
-        if ($actor->isGuest()) {
-            throw new NotAuthenticatedException();
-        }
+        if ($actor->isGuest()) throw new NotAuthenticatedException();
+        if (!$actor->isAdmin()) throw new NotFoundException();
+
         $limit = $this->extractLimit($request);
         $offset = $this->extractOffset($request);
 
-        $userID = $actor->id;
-        $transactionQuery = Transaction::with(['creator', 'receiver', 'banks', 'logs'])
-            ->where('rvn_creator_id', $userID)
-            ->orWhere('rvn_receiver_id', $userID);
+        $transactionQuery = Transaction::with(['creator', 'receiver', 'banks', 'logs']);
         $transactionResult = $transactionQuery
             ->skip($offset)
             ->take($limit + 1)
@@ -48,7 +46,7 @@ class ListTransactionsController extends AbstractListController
             $transactionResult->pop();
         }
         $document->addPaginationLinks(
-            $this->url->to('api')->route('transactions.index'),
+            $this->url->to('api')->route('transactions.admin.index'),
             $request->getQueryParams(),
             $offset,
             $limit,

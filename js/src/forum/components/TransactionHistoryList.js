@@ -4,6 +4,7 @@ import LoadingIndicator from 'flarum/components/LoadingIndicator';
 import Dropdown from 'flarum/common/components/Dropdown';
 import DetailTransactionModal from './DetailTransactionModal';
 import UpdateStatusTransactionModal from './UpdateStatusTransactionModal';
+import WithdrawMonneyTransactionModal from './WithdrawMonneyTransactionModal';
 
 export default class TransactionHistoryList extends Component {
   oninit(vnode) {
@@ -16,55 +17,42 @@ export default class TransactionHistoryList extends Component {
     this.loadResults();
   }
 
-  getTotalMonny() {}
-
   getStatus(status, banks, monney, creator_id, create_status, revice_status) {
-    if (!banks && banks.length <= 0) return 1;
-    let totalMonney = banks.reduce((total, transaction) => {
-      return total + parseFloat(transaction.rvn_amount);
-    }, 0);
-    let balance = totalMonney - monney;
-    let isCurrent = this.user.id() == creator_id ? true : false;
-    if (status == 4) {
+    if (!banks || banks.length === 0) return 1;
+
+    const totalMonney = banks.reduce((total, transaction) => total + parseFloat(transaction.rvn_amount), 0);
+    const balance = totalMonney - monney;
+    const isCurrentUser = this.user.id() === creator_id;
+
+    if (status === 4) {
       return 4;
     }
-    if (isCurrent) {
-      if (status == 5) {
-        if (create_status == 5) {
-          return 5;
-        }
-        if (create_status == 3) {
-          return 6;
-        }
+
+    if (isCurrentUser) {
+      if (status === 5) {
+        if (create_status === 5) return 5;
+        if (create_status === 3) return 6;
         return create_status;
       }
 
       if (balance >= 0) {
-        if (create_status == 3) {
-          return 3;
-        }
-        if (status == 1 || status == 2) {
-          return 2;
-        }
-        if (status == 3) {
-          return 3;
-        }
+        if (create_status === 3) return 3;
+        if ([1, 2].includes(status)) return 2;
+        if (status === 3) return 3;
       }
 
       return 1;
     } else {
-      if (status == 5) {
-        if (revice_status == 5) {
-          return 5;
-        }
-        if (revice_status == 3) {
-          return 6;
-        }
+      if (status === 5) {
+        if (revice_status === 5) return 5;
+        if (revice_status === 3) return 6;
         return revice_status;
       }
-      if (revice_status == 3) {
+
+      if (revice_status === 3) {
         return 3;
       }
+
       return 2;
     }
   }
@@ -113,7 +101,12 @@ export default class TransactionHistoryList extends Component {
       <div>
         <div style="display: flex; justify-content: space-between;">
           <div style="padding-bottom:10px; font-size: 24px; font-weight: bold;">Lịch sử giao dịch</div>
-          <button class="btn-withdraw" onclick="openWithdrawModal()">
+          <button
+            class="btn-withdraw"
+            onclick={() => {
+              app.modal.show(WithdrawMonneyTransactionModal);
+            }}
+          >
             Rút Tiền
           </button>
         </div>

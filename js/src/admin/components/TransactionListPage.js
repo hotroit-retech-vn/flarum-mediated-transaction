@@ -7,64 +7,33 @@ export default class TransactionListPage extends AdminPage {
 
   oninit(vnode) {
     super.oninit(vnode);
-    // this.scammerData = [];
-    this.loadTransactionList();
-    this.scammerData = [
-      {
-        id: 1,
-        attributes: {
-          creatorName: 'Nguyễn Văn A',
-          receiverName: 'Trần Thị B',
-          serviceFee: 10000,
-          transactionFee: 5000,
-          totalAmount: 150000,
-          createdAt: '2024-10-12T10:00:00Z',
-          status: 'Hoàn tất',
-          scammerBankCode: '123456789',
-          scammerAccName: 'Nguyễn Văn A',
-          scammerBankName: 'Ngân hàng ABC',
-          scammerPhone: '0987654321',
-          scammerEmail: 'nguyenvana@example.com',
-        },
-      },
-      {
-        id: 2,
-        attributes: {
-          creatorName: 'Lê Văn C',
-          receiverName: 'Nguyễn Thị D',
-          serviceFee: 20000,
-          transactionFee: 10000,
-          totalAmount: 300000,
-          createdAt: '2024-10-11T15:30:00Z',
-          status: 'Đang xử lý',
-          scammerBankCode: '987654321',
-          scammerAccName: 'Lê Văn C',
-          scammerBankName: 'Ngân hàng XYZ',
-          scammerPhone: '0123456789',
-          scammerEmail: 'levanc@example.com',
-        },
-      },
-      {
-        id: 3,
-        attributes: {
-          creatorName: 'Phạm Văn E',
-          receiverName: 'Trần Văn F',
-          serviceFee: 15000,
-          transactionFee: 7000,
-          totalAmount: 220000,
-          createdAt: '2024-10-10T08:15:00Z',
-          status: 'Thất bại',
-          scammerBankCode: '456789123',
-          scammerAccName: 'Phạm Văn E',
-          scammerBankName: 'Ngân hàng MNO',
-          scammerPhone: '0987654321',
-          scammerEmail: 'phamvena@example.com',
-        },
-      },
-    ];
+    this.transactionData = [];
+    this.isLoadingPage = true;
+    this.moreResults = false;
+    this.query = '';
+    this.loadPage(0);
+  }
+  parseResults(results) {
+    this.moreResults = !!results.payload.links && !!results.payload.links.next;
+
+    [].push.apply(this.transactionData, results.payload.data);
+    this.isLoadingPage = false;
+    m.redraw();
+
+    return results;
   }
 
-  loadTransactionList() {}
+  loadPage(offset = 0) {
+    this.transactionData = [];
+    return app.store
+      .find('admin/transactions', {
+        page: {
+          offset,
+        },
+      })
+      .catch(() => {})
+      .then(this.parseResults.bind(this));
+  }
 
   headerInfo() {
     return {
@@ -75,11 +44,48 @@ export default class TransactionListPage extends AdminPage {
     };
   }
 
-  /**
-   * Show the actual ImageUploadPage.
-   *
-   * @returns {*}
-   */
+  getStatusText(status) {
+    switch (status) {
+      case 3:
+        return 'Hoàn thành';
+      case 4:
+        return 'Đã hủy';
+      case 5:
+        return 'Đang khiếu nại';
+      case 6:
+        return 'Đang khiếu nại';
+      default:
+        return 'Đang xử lý';
+    }
+  }
+
+  getStatusColor(status) {
+    switch (status) {
+      case 3: // Hoàn thành
+        return 'green';
+      case 4: // Đã hủy
+        return 'red';
+      case 1: // Đang xử lý
+      case 2:
+      case 5:
+        return 'orange';
+      case 6:
+        return 'orange';
+      default:
+        return 'gray';
+    }
+  }
+
+  formatCurrency(value) {
+    if (!value) value = 0;
+    return (+value).toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  }
+
   content() {
     return [
       m('div.UserListPage-header', [
@@ -107,8 +113,8 @@ export default class TransactionListPage extends AdminPage {
                   m('th.rvn__th', 'STT'),
                   m('th.rvn__th', 'Người tạo'),
                   m('th.rvn__th', 'Người nhận'),
-                  m('th.rvn__th', 'Phí nhận'),
-                  m('th.rvn__th', 'Phí giao dịch (%)'),
+                  m('th.rvn__th', 'Tiền thuê'),
+                  m('th.rvn__th', 'Phí (%)'),
                   m('th.rvn__th', 'Tổng tiền'),
                   m('th.rvn__th', 'Ngày tạo'),
                   m('th.rvn__th', 'Trạng thái'),
@@ -118,16 +124,18 @@ export default class TransactionListPage extends AdminPage {
 
               m(
                 'tbody.rvn__tbody',
-                this.scammerData.map((scammer, colIndex) =>
-                  m('tr.rvn__tr', { key: scammer.id }, [
+                this.transactionData.map((transac, colIndex) =>
+                  m('tr.rvn__tr', { key: transac.id }, [
                     m('td.rvn__td', colIndex + 1),
-                    m('td.rvn__td', scammer.attributes.creatorName),
-                    m('td.rvn__td', scammer.attributes.receiverName),
-                    m('td.rvn__td', scammer.attributes.serviceFee),
-                    m('td.rvn__td', scammer.attributes.transactionFee),
-                    m('td.rvn__td', scammer.attributes.totalAmount),
-                    m('td.rvn__td', new Date(scammer.attributes.createdAt).toLocaleDateString()),
-                    m('td.rvn__td', scammer.attributes.status),
+                    m('td.rvn__td', transac.attributes.creator.username),
+                    m('td.rvn__td', transac.attributes.receiver.username),
+                    m('td.rvn__td', this.formatCurrency(transac.attributes.rvn_amount)),
+                    m('td.rvn__td', transac.attributes.rvn_fee * 100 + '%'),
+                    m('td.rvn__td', this.formatCurrency(transac.attributes.rvn_amount + transac.attributes.rvn_amount * transac.attributes.rvn_fee)),
+                    m('td.rvn__td', transac.attributes.created_at),
+                    m('td.rvn__td',  {
+                      className: this.getStatusColor(transac.attributes.rvn_status),
+                    },this.getStatusText(transac.attributes.rvn_status)),
                     m(
                       'td.rvn__td',
                       m(

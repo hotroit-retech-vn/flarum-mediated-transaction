@@ -27,6 +27,8 @@ return [
         ->route('/giao-dich-trung-gian', 'retechvn/mediated-transaction'),
     new Extend\Locales(__DIR__ . '/locale'),
     (new Extend\Routes('api'))
+        ->get('/admin/transactions', 'transactions.admin.index', Api\Controller\ListTransactionsController::class)
+
         ->get('/transactions', 'transactions.index', Api\Controller\ListTransactionsController::class)
         ->get('/get-all-transactions', 'transactions.show', Api\Controller\ShowTransactionController::class)
         ->post('/transactions', 'transactions.create', Api\Controller\CreateTransactionController::class)

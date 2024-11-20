@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /******/ (() => { // webpackBootstrap
 /******/ 	// runtime can't be in strict mode because a global variable is assign and maybe created.
 /******/ 	var __webpack_modules__ = ({
@@ -241,6 +240,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _DetailTransactionModal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./DetailTransactionModal */ "./src/forum/components/DetailTransactionModal.js");
 /* harmony import */ var _UpdateStatusTransactionModal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./UpdateStatusTransactionModal */ "./src/forum/components/UpdateStatusTransactionModal.js");
+/* harmony import */ var _WithdrawMonneyTransactionModal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./WithdrawMonneyTransactionModal */ "./src/forum/components/WithdrawMonneyTransactionModal.js");
+
 
 
 
@@ -264,50 +265,35 @@ var TransactionHistoryList = /*#__PURE__*/function (_Component) {
     this.user = this.attrs.params.user;
     this.loadResults();
   };
-  _proto.getTotalMonny = function getTotalMonny() {};
   _proto.getStatus = function getStatus(status, banks, monney, creator_id, create_status, revice_status) {
-    if (!banks && banks.length <= 0) return 1;
+    if (!banks || banks.length === 0) return 1;
     var totalMonney = banks.reduce(function (total, transaction) {
       return total + parseFloat(transaction.rvn_amount);
     }, 0);
     var balance = totalMonney - monney;
-    var isCurrent = this.user.id() == creator_id ? true : false;
-    if (status == 4) {
+    var isCurrentUser = this.user.id() === creator_id;
+    if (status === 4) {
       return 4;
     }
-    if (isCurrent) {
-      if (status == 5) {
-        if (create_status == 5) {
-          return 5;
-        }
-        if (create_status == 3) {
-          return 6;
-        }
+    if (isCurrentUser) {
+      if (status === 5) {
+        if (create_status === 5) return 5;
+        if (create_status === 3) return 6;
         return create_status;
       }
       if (balance >= 0) {
-        if (create_status == 3) {
-          return 3;
-        }
-        if (status == 1 || status == 2) {
-          return 2;
-        }
-        if (status == 3) {
-          return 3;
-        }
+        if (create_status === 3) return 3;
+        if ([1, 2].includes(status)) return 2;
+        if (status === 3) return 3;
       }
       return 1;
     } else {
-      if (status == 5) {
-        if (revice_status == 5) {
-          return 5;
-        }
-        if (revice_status == 3) {
-          return 6;
-        }
+      if (status === 5) {
+        if (revice_status === 5) return 5;
+        if (revice_status === 3) return 6;
         return revice_status;
       }
-      if (revice_status == 3) {
+      if (revice_status === 3) {
         return 3;
       }
       return 2;
@@ -360,7 +346,9 @@ var TransactionHistoryList = /*#__PURE__*/function (_Component) {
       style: "padding-bottom:10px; font-size: 24px; font-weight: bold;"
     }, "L\u1ECBch s\u1EED giao d\u1ECBch"), m("button", {
       "class": "btn-withdraw",
-      onclick: "openWithdrawModal()"
+      onclick: function onclick() {
+        flarum_app__WEBPACK_IMPORTED_MODULE_3___default().modal.show(_WithdrawMonneyTransactionModal__WEBPACK_IMPORTED_MODULE_8__["default"]);
+      }
     }, "R\xFAt Ti\u1EC1n")), m("div", {
       "class": "sideNavContainer"
     }, m("div", {
@@ -1109,6 +1097,139 @@ var UpdateStatusTransactionModal = /*#__PURE__*/function (_Modal) {
 
 /***/ }),
 
+/***/ "./src/forum/components/WithdrawMonneyTransactionModal.js":
+/*!****************************************************************!*\
+  !*** ./src/forum/components/WithdrawMonneyTransactionModal.js ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ WithdrawMonneyTransactionModal)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/Modal */ "flarum/components/Modal");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var WithdrawMonneyTransactionModal = /*#__PURE__*/function (_Modal) {
+  function WithdrawMonneyTransactionModal() {
+    return _Modal.apply(this, arguments) || this;
+  }
+  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(WithdrawMonneyTransactionModal, _Modal);
+  var _proto = WithdrawMonneyTransactionModal.prototype;
+  _proto.oninit = function oninit(vnode) {
+    _Modal.prototype.oninit.call(this, vnode);
+    this.bankAccountName = ''; // Tên tài khoản ngân hàng
+    this.bankAccountNumber = ''; // Số tài khoản ngân hàng
+    this.bankName = ''; // Tên ngân hàng
+    this.totalAmount = 500000; // Tổng số tiền có thể rút (có thể lấy từ API hoặc logic tính toán)
+  };
+  _proto.title = function title() {
+    return 'Yêu cầu rút tiền';
+  };
+  _proto.content = function content() {
+    var _this = this;
+    return m("div", {
+      className: "Modal-body"
+    }, m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\u1ED5ng s\u1ED1 ti\u1EC1n c\xF3 th\u1EC3 r\xFAt"), m("input", {
+      className: "FormControl",
+      type: "text",
+      value: this.totalAmount,
+      disabled: true
+    })), m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
+      className: "FormControl",
+      type: "text",
+      placeholder: "Nh\u1EADp t\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
+      value: this.bankAccountName,
+      oninput: function oninput(e) {
+        _this.bankAccountName = e.target.value;
+      }
+    })), m("div", {
+      className: "Form-group"
+    }, m("label", null, "S\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
+      className: "FormControl",
+      type: "text",
+      placeholder: "Nh\u1EADp s\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
+      value: this.bankAccountNumber,
+      oninput: function oninput(e) {
+        _this.bankAccountNumber = e.target.value;
+      }
+    })), m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\xEAn ng\xE2n h\xE0ng"), m("input", {
+      className: "FormControl",
+      type: "text",
+      placeholder: "Nh\u1EADp t\xEAn ng\xE2n h\xE0ng",
+      value: this.bankName,
+      oninput: function oninput(e) {
+        _this.bankName = e.target.value;
+      }
+    })), m("div", {
+      className: "Form-group"
+    }, m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+      className: "Button Button--primary",
+      type: "submit",
+      loading: this.loading,
+      onclick: function onclick() {
+        _this.onSubmit();
+      }
+    }, "X\xE1c nh\u1EADn"), m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+      className: "Button Button--secondary",
+      onclick: function onclick() {
+        _this.onCancelConfirmed();
+        _this.hide();
+      }
+    }, "H\u1EE7y b\u1ECF")));
+  }
+
+  // Xử lý khi xác nhận yêu cầu rút tiền
+  ;
+  _proto.onSubmit = function onSubmit() {
+    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
+      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
+      flarum_app__WEBPACK_IMPORTED_MODULE_2___default().store.createRecord('withdraw-transaction', {
+        bankAccountName: this.bankAccountName,
+        bankAccountNumber: this.bankAccountNumber,
+        bankName: this.bankName,
+        totalAmount: this.totalAmount
+      });
+
+      // Đóng modal sau khi gửi yêu cầu
+      this.hide();
+      alert('Yêu cầu rút tiền đã được gửi.');
+    } else {
+      alert('Vui lòng nhập đầy đủ thông tin!');
+    }
+  }
+
+  // Xử lý khi hủy bỏ
+  ;
+  _proto.onCancelConfirmed = function onCancelConfirmed() {
+    this.bankAccountName = '';
+    this.bankAccountNumber = '';
+    this.bankName = '';
+  };
+  _proto.className = function className() {
+    return 'WithdrawMonneyTransactionModal';
+  };
+  return WithdrawMonneyTransactionModal;
+}((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
+
+
+/***/ }),
+
 /***/ "./src/forum/index.js":
 /*!****************************!*\
   !*** ./src/forum/index.js ***!
@@ -1557,7 +1678,4 @@ __webpack_require__.r(__webpack_exports__);
 module.exports = __webpack_exports__;
 /******/ })()
 ;
-=======
-(()=>{var t={n:n=>{var r=n&&n.__esModule?()=>n.default:()=>n;return t.d(r,{a:r}),r},d:(n,r)=>{for(var e in r)t.o(r,e)&&!t.o(n,e)&&Object.defineProperty(n,e,{enumerable:!0,get:r[e]})},o:(t,n)=>Object.prototype.hasOwnProperty.call(t,n)};(()=>{"use strict";const n=flarum.core.compat["common/app"];t.n(n)().initializers.add("retechvn/mediated-transaction",(function(){console.log("[retechvn/mediated-transaction] Hello, forum and admin!")}));const r=flarum.core.compat["forum/app"];var e=t.n(r);const a=flarum.core.compat["components/LinkButton"];var o=t.n(a);const i=flarum.core.compat["common/extend"],s=flarum.core.compat["components/IndexPage"];var c=t.n(s);function u(t,n){return u=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(t,n){return t.__proto__=n,t},u(t,n)}function h(t,n){t.prototype=Object.create(n.prototype),t.prototype.constructor=t,u(t,n)}const l=flarum.core.compat["common/components/Page"];var d=t.n(l);const v=flarum.core.compat["helpers/listItems"];var p=t.n(v);const _=flarum.core.compat["components/Button"];var f=t.n(_);const g=flarum.core.compat["common/components/Alert"];var y=t.n(g);const b=flarum.core.compat["components/Modal"];var w=t.n(b);const C=flarum.core.compat.app;var T=t.n(C),k=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n)},r.title=function(){return"Thanh Toán Giao Dịch"},r.content=function(){return m(".Modal-body .row",[m(".Form-group",{style:"width: 100%; text-align: center;"},[m("a",{href:"https://me-qr.com",style:"cursor:pointer;display:block",border:"0"},[m("img",{src:"https://cdn2.me-qr.com/qr/129980334.png?v=1728835376",alt:"Create QR code for free"})])]),m(".Form-group ",{style:"width: 100%;"},[f().component({type:"submit",className:"Button Button--primary Button--block"},"Tiếp tục tạo giao dịch")])])},r.onsubmit=function(t){t.preventDefault(),this.attrs.onsubmit(!0),T().modal.close()},n}(w()),x=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.loading=!0,this.user_current=e().session.user,this.initializeData(),this.resultsUser=[],this.showDropdown=!1,this.handleClickOutside=this.handleClickOutside.bind(this)},r.initializeData=function(){this.data={rvn_creator_id:this.user_current.data.id,rvn_receiver_id:"",rvn_amount:0,rvn_fee:.1,rvn_payer_id:this.user_current.data.id,rvn_note:""},this.rvn_creator_name=e().session.user.username(),this.rvn_receiver_name="",this.rvn_service_fee=0,this.rvn_total_amount=0,this.rvn_receiver_name_search="",this.rvn_receiver_name_select=""},r.oncreate=function(n){t.prototype.oncreate.call(this,n),e().setTitle("Giao dịch trung gian"),e().setTitleCount(0),document.addEventListener("click",this.handleClickOutside)},r.onremove=function(){document.removeEventListener("click",this.handleClickOutside)},r.view=function(){return m(".IndexPage",[c().prototype.hero(),m(".container",[m(".sideNavContainer",[this.renderSidebar(),this.renderForm()])])])},r.renderSidebar=function(){return m("nav.IndexPage-nav.sideNav",m("ul",p()(c().prototype.sidebarItems().toArray())))},r.renderForm=function(){var t=this;return m(".IndexPage-results.sideNavOffset",[m("div.retechvn__text-center",m("h2","Giao dịch trung gian")),m(".Modal-body.rvn__body-form .row",[this.renderInput("Tên đồ án","Nhập tên đồ án",this.rvn_creator_name+(""!=this.rvn_receiver_name?"__"+this.rvn_receiver_name:""),!0),this.renderReceiverInput("Tên đối tác","Nhập tên đối tác cần tìm kiếm"),this.renderNumberInput("Tiền thuê",this.data.rvn_amount,this.handleRentChange.bind(this)),this.renderInput("Phí dịch vụ ("+100*this.data.rvn_fee+"%)","",this.rvn_service_fee,!0),this.renderRadioGroup("Người trả phí","Bạn trả phí","Đối tác trả phi"),this.renderInput("Tổng tiền bạn phải trả","",this.rvn_total_amount,!0),this.renderTextarea("Ghi chú",this.data.rvn_note,(function(n){return t.data.rvn_note=n.target.value})),this.renderCheckbox(),this.renderSubmitButton()])])},r.renderInput=function(t,n,r,e){return void 0===e&&(e=!1),m(".Form-group.col.col-md-6",[m("label",t),m("input.FormControl",{value:r,disabled:e,placeholder:n})])},r.renderReceiverInput=function(t,n){var r=this;return m(".Form-group.position-relative.col.col-md-6",[m("label",[t,m("span",{className:this.data.rvn_receiver_id?"rvn__text-green":"rvn__text-red"},this.data.rvn_receiver_id?" ("+this.rvn_receiver_name_select+")":" (Chưa chọn)")]),m("input.FormControl",{value:this.rvn_receiver_name_search,placeholder:n,onfocus:function(){return r.showDropdown=!0},onkeyup:function(t){r.rvn_receiver_name_search=t.target.value,setTimeout((function(){return r.search(t.target.value)}),100)}}),this.showDropdown&&this.renderDropdown()])},r.renderDropdown=function(){return m(".search-results",this.resultsUser.length?this.resultsUser.map(this.renderDropdownItem.bind(this)):m("div.no-results.rvn__mx2","Không có dữ liệu"))},r.renderDropdownItem=function(t){var n=this;return m("div.search-result-item",{onclick:function(){return n.selectReceiver(t)}},[t.avatarUrl()?m("img.Avatar.rvn__avatar",{src:t.avatarUrl(),alt:t.displayName()}):m("span.Avatar.rvn__avatar",{style:this.avatarStyle(t)},t.displayName().charAt(0).toUpperCase()),m("span.username","  "+t.displayName()+" ("+t.username()+")")])},r.renderNumberInput=function(t,n,r){return m(".Form-group.col.col-md-6",[m("label",t+" ("+this.formatCurrency(n)+")"),m("input[type=number].FormControl",{value:n,onchange:r})])},r.renderRadioGroup=function(t,n,r){return m(".Form-group.col.col-md-6",[m("label",t),m(".radio-group",[this.renderRadioOption(n,this.data.rvn_creator_id,this.rvn_creator_name,this.data.rvn_payer_id==this.data.rvn_creator_id),this.renderRadioOption(r,this.data.rvn_receiver_id,this.rvn_receiver_name,this.data.rvn_payer_id==this.data.rvn_receiver_id,!this.data.rvn_receiver_id)])])},r.renderRadioOption=function(t,n,r,e,a){var o=this;return void 0===a&&(a=!1),m("label",[m("input[type=radio]",{name:"fee_payer",value:n,checked:e,disabled:a,onchange:function(t){return o.handleFeePayerChange(t)}})," "+t+" ("+r+")"])},r.renderTextarea=function(t,n,r){return m(".Form-group.col.col-12.rvn_note",[m("label",t),m("textarea.FormControl",{value:n,onchange:r})])},r.renderCheckbox=function(){var t=this;return m(".Form-group.col",[m("label",[m("input[type=checkbox]",{checked:this.isChecked,onchange:function(n){return t.isChecked=n.target.checked}})," Đồng ý với điều khoản và điều kiện!"])])},r.renderSubmitButton=function(){var t=this;return m(".Form-group.col.col-12",[f().component({type:"button",className:"Button Button--primary Button--block",onclick:function(n){return t.onsubmit(n)}},"Tạo giao dịch")])},r.handleRentChange=function(t){this.data.rvn_amount=+t.target.value,this.calculateTotal()},r.handleFeePayerChange=function(t){this.data.rvn_payer_id=t.target.value,this.calculateTotal()},r.selectReceiver=function(t){this.rvn_receiver_name=t.username(),this.rvn_receiver_name_search="",this.rvn_receiver_name_select=t.displayName()+" ("+t.username()+")",this.data.rvn_receiver_id=t.data.id,this.showDropdown=!1},r.avatarStyle=function(t){return{"--avatar-bg":t.color(),"font-size":"20px"}},r.validateForm=function(){for(var t=this.data,n=0,r=[[!t.rvn_receiver_id,"Chưa chọn tên đối tác."],[t.rvn_amount<=0,"Tiền thuê phải lớn hơn 0."],[!t.rvn_fee,"Phí dịch vụ không hợp lệ."],[!t.rvn_payer_id,"Người trả phí chưa được chọn."],[!this.isChecked,"Bạn phải đồng ý với điều khoản và điều kiện."]];n<r.length;n++){var e=r[n],a=e[0],o=e[1];if(a)return this.showAlert("error",o,5e3),!1}return!0},r.formatCurrency=function(t){return(+t).toLocaleString("vi-VN",{style:"currency",currency:"VND",minimumFractionDigits:0,maximumFractionDigits:0})},r.calculateTotal=function(){var t=+this.data.rvn_amount||0,n=.1*t;this.rvn_service_fee=this.formatCurrency(n),this.rvn_total_amount=this.formatCurrency(this.data.rvn_payer_id==this.data.rvn_creator_id?t+n:t)},r.search=function(t){var n=this;t.trim()?e().store.find("users",{filter:{q:t}}).then((function(t){n.resultsUser=t.filter((function(t){return t.data.id!=n.user_current.id()})),n.showDropdown=!0})):(this.resultsUser=[],this.showDropdown=!1)},r.handleClickOutside=function(t){t.target.closest(".FormControl")||t.target.closest(".search-results")||(this.showDropdown=!1,m.redraw())},r.showAlert=function(t,n,r){void 0===t&&(t="success"),void 0===n&&(n=""),void 0===r&&(r=5e3),e().alerts.show(y(),{type:t},n),setTimeout((function(){e().alerts.clear()}),r)},r.onsubmit=function(t){var n=this;t.preventDefault(),this.loading=!0;var r={rvn_creator_id:Number(this.data.rvn_creator_id),rvn_receiver_id:Number(this.data.rvn_receiver_id),rvn_amount:Number(this.data.rvn_amount),rvn_fee:this.data.rvn_fee,rvn_payer_id:Number(this.data.rvn_payer_id),rvn_note:this.data.rvn_note};e().modal.show(k,{onsubmit:function(t){console.log(t),e().request({method:"POST",url:e().forum.attribute("apiUrl")+"/transactions",body:{data:r}}).then((function(t){console.log(t),n.showAlert("success","Tạo giao dịch thành công!",5e3),n.initializeData(),n.loading=!1})).catch((function(t){console.log(t),n.showAlert("error","Có lỗi xảy ra. Vui lòng thử lại!",5e3),n.loading=!1}))}})},n}(d());const N=flarum.core.compat["forum/components/HeaderSecondary"];var D=t.n(N);const I=flarum.core.compat["components/UserPage"];var R=t.n(I);const F=flarum.core.compat.Component;var P=t.n(F);const B=flarum.core.compat["components/LoadingIndicator"];var U=t.n(B);const O=flarum.core.compat["common/components/Dropdown"];var S=t.n(O),H=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.transId=this.attrs.transId,this.currentUserId=this.attrs.userId,this.loading=!0,this.moreResults=!1,this.tranlogs=[],this.loadData(this.transId)},r.parseResults=function(t){return this.moreResults=!!t.payload.links&&!!t.payload.links.next,[].push.apply(this.tranlogs,t.payload.data),this.loading=!1,m.redraw(),t},r.loadData=function(t,n){void 0===n&&(n=0),T().store.find("transaction-logs",{filter:{transactionId:t},page:{offset:n}}).catch((function(){})).then(this.parseResults.bind(this))},r.title=function(){return"Chi tiết giao dịch"},r.content=function(){var t=this;return this.loading?m("div",{className:"Modal-body"},U().component({size:"large"})):m("div",{className:"Modal-body sideNavContainer"},m("table",{className:"TransactionLogsTable rvn__table"},m("thead",{class:"rvn__thead"},m("tr",{class:"rvn__tr"},m("th",{class:"rvn__th"},"STT"),m("th",{class:"rvn__th"},"Trạng thái"),m("th",{class:"rvn__th"},"Lý do"),m("th",{class:"rvn__th"},"Ngày cập nhật"))),m("tbody",{class:"rvn__tbody"},this.tranlogs.length?this.tranlogs.map((function(n,r){return m("tr",{key:n.id,class:"rvn__tr"},m("td",{class:"rvn__th"},r+1),m("td",{class:"rvn__th"},t.showText(t.currentUserId,n.attributes.creator,n.attributes.rvn_status,n.attributes.transaction)),m("td",{class:"rvn__th"},n.attributes.rvn_reason||"N/A"),m("td",{class:"rvn__th"},n.attributes.updated_at))})):m("tr",null,m("td",{class:"rvn__th",colSpan:"6"},"Không có dữ liệu")))))},r.showText=function(t,n,r,e){var a="";return 1==r&&(a="["+n.username+"] đã tạo giao dịch"),2==r&&(a="["+n.username+"] đã thanh toán giao dịch"),3==r&&(a="["+n.username+"] đã hoàn thành giao dịch"),4==r&&(a="["+n.username+"] đã hủy giao dịch"),5==r&&(a="["+n.username+"] đã khiếu nại giao dịch"),a},r.onsubmit=function(t){t.preventDefault()},r.className=function(){return"DetailTransactionModal"},n}(w()),L=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.transId=this.attrs.transId,console.log(this.attrs)},r.loadData=function(t){},r.title=function(){return"Hủy giao dịch"},r.content=function(){return m(".Modal-body .row",m("p",null," sdas"))},r.onsubmit=function(t){t.preventDefault()},r.className=function(){},n}(w()),M=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.loading=!0,this.moreResults=!1,this.transactionHistory=[],this.user=this.attrs.params.user,this.statusText={1:"Đang xử lý",2:"Thanh toán",3:"Hoàn thành",4:"Kiếu nại",5:"Đã hủy"},this.loadResults()},r.getTotalMonny=function(){},r.getStatus=function(t,n,r,e){if(!n&&n.length<=0)return 1;var a=n.reduce((function(t,n){return t+parseFloat(n.rvn_amount)}),0)-r;if(this.user,a>=0){if(1==t||2==t)return 2;if(3==t)return 3}return 4==t?4:5==t?5:1},r.showStatusText=function(t){return 3==t?"Hoàn thành":5==t?"Đã hủy":"Đang xử lý"},r.view=function(){var t=this;return this.loading&&U().component({size:"large"}),m("div",null,m("div",{style:"padding-bottom:10px; font-size: 24px;font-weight: bold;"},"Lịch sử giao dịch"),m("div",{class:"sideNavContainer"},m("table",{class:"rvn__table"},m("thead",{class:"rvn__thead"},m("tr",{class:"rvn__tr"},m("th",{class:"rvn__th"},"STT"),m("th",{class:"rvn__th"},"Tên đồ án"),m("th",{class:"rvn__th"},"Tên thợ"),m("th",{class:"rvn__th"},"Tiền thuê"),m("th",{class:"rvn__th"},"Phí"),m("th",{class:"rvn__th"},"Người trả phí"),m("th",{class:"rvn__th"},"Tổng tiền"),m("th",{class:"rvn__th"},"Trạng thái"),m("th",{class:"rvn__th"},"Ngày tạo"),m("th",{class:"rvn__th",style:"width:100px;"},"Chi tiết"))),m("tbody",{class:"rvn__tbody"},this.transactionHistory.map((function(n,r){var e=t.showPrice(t.user.id,n.attributes.creator.id,n.attributes.rvn_payer_id,n.attributes.rvn_amount,n.attributes.rvn_fee),a=t.getStatus(n.attributes.latest_log_status,n.attributes.banks,e,n.attributes.creator.id);return m("tr",{class:"rvn__tr",key:n.id,"data-id":n.id},m("td",{class:"rvn__td"},r+1),m("td",{class:"rvn__td"},n.attributes.creator.username+"__"+n.attributes.receiver.username),m("td",{class:"rvn__td"},n.attributes.receiver.username),m("td",{class:"rvn__td"},t.formatCurrency(n.attributes.rvn_amount)),m("td",{class:"rvn__td"},100*n.attributes.rvn_fee,"%"),m("td",{class:"rvn__td"},n.attributes.rvn_payer_id==n.attributes.rvn_receiver_id?n.attributes.receiver.username:n.attributes.creator.username),m("td",{class:"rvn__td"},t.formatCurrency(n.attributes.rvn_amount+n.attributes.rvn_amount*n.attributes.rvn_fee)),m("td",{class:"rvn__td"},t.showStatusText(a)),m("td",{class:"rvn__td"},n.attributes.created_at),m("td.rvn__td",m(S(),{className:"User-controls",buttonClassName:"Button Button--icon Button--flat",menuClassName:"Dropdown-menu--right",icon:"fas fa-ellipsis-h"},[m("button.Button.UserList-detailBtn",{title:"Xem chi tiết",onclick:function(){return T().modal.show(H,{transId:n.id,userId:t.user.id()})}},["Xem chi tiết"]),2==a||5==a?m("button.Button.UserList-confirmBtn",{title:"Hoàn thành",onclick:function(){return T().modal.show(H)}},["Hoàn thành"]):"",1==a||2==a||5==a?m("button.Button.UserList-cancelBtn",{title:"Hủy",onclick:function(){return T().modal.show(L)}},["Hủy"]):"",1==a||2==a||3==a?m("button.Button.UserList-complaintsBtn",{title:"Khiếu nại",onclick:function(){return T().modal.show(L)}},["Khiếu nại"]):""])))}))))))},r.loadMore=function(){this.loading=!0,this.loadResults(this.transactionHistory.length)},r.showPrice=function(t,n,r,e,a){return n==t&&t==r?a*e:n==t&&t!=r?0:n!=t&&t==r?e+a*e:e},r.caculator=function(t,n,r){return void 0===r&&(r=!1),r?this.formatCurrency(t+n*t):this.formatCurrency(n*t)},r.formatCurrency=function(t){return(+t).toLocaleString("vi-VN",{style:"currency",currency:"VND",minimumFractionDigits:0,maximumFractionDigits:0})},r.parseResults=function(t){return this.moreResults=!!t.payload.links&&!!t.payload.links.next,console.log(t.payload.data),[].push.apply(this.transactionHistory,t.payload.data),this.loading=!1,m.redraw(),t},r.hasMoreResults=function(){return this.moreResults},r.loadResults=function(t){return void 0===t&&(t=0),T().store.find("transactions",{filter:{user:this.user.id()},page:{offset:t}}).catch((function(){})).then(this.parseResults.bind(this))},n}(P()),A=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.loadUser(m.route.param("username"))},r.content=function(){return m("div",{className:"TransferHistoryPage"},M.component({params:{user:this.user}}))},n}(R());const z=flarum.core.compat["components/Notification"];var G=t.n(z);flarum.core.compat["common/helpers/username"];var j=function(t){function n(){return t.apply(this,arguments)||this}h(n,t);var r=n.prototype;return r.icon=function(){return"fas fa-exchange-alt"},r.href=function(){return e().route.transaction(this.attrs.notification.subject())},r.content=function(){return e().translator.trans("retechvn-mediated-transaction.forum.notifications.transaction_created_text",{user:this.attrs.notification.fromUser(),transaction:this.attrs.notification.subject()})},n}(G());const q=flarum.core.compat["components/NotificationGrid"];var K=t.n(q);e().initializers.add("retechvn/mediated-transaction",(function(){e().routes.transactionPage={path:"/giao-dich-trung-gian",component:x},e().routes["user.transactionHistoryPage"]={path:"/u/:username/lich-su-giao-dich",component:A},e().notificationComponents.transactionCreated=j,(0,i.extend)(K().prototype,"notificationTypes",(function(t){t.add("transactionCreated",{name:"transactionCreated",icon:"fas fa-exchange-alt",label:e().translator.trans("retechvn-mediated-transaction.forum.notifications.transaction_created_label")})})),(0,i.extend)(c().prototype,"navItems",(function(t){e().session&&e().session.user&&e().session.user&&t.add("transactionPage",m(o(),{href:e().route("transactionPage"),icon:"fas fa-magic"},"Giao dịch trung gian"),100)})),(0,i.extend)(D().prototype,"items",(function(t){e().session&&e().session.user&&e().session.user&&t.add("techcoin",m("span.rvn__text-piece",[m("i.fas.fa-coins")," 100.000.000 đ"]),15)})),(0,i.extend)(R().prototype,"navItems",(function(t,n){e().session&&e().session.user&&e().session.user.id()==this.user.id()&&t.add("transactionMoney",o().component({href:e().route("user.transactionHistoryPage",{username:this.user.username()}),icon:"fas fa-money-bill"},["Lịch sử giao dịch"]),10)}))}))})(),module.exports={}})();
->>>>>>> 8ac899d7186c85acf3b0d621aeb1811e10c06aea
 //# sourceMappingURL=forum.js.map
