@@ -28,17 +28,19 @@ return [
         ->route('/yeu-cau-rut-tien', 'retechvn/pay-request-list'),
     new Extend\Locales(__DIR__ . '/locale'),
     (new Extend\Routes('api'))
-        ->get('/admin/transactions', 'transactions.admin.index', Api\Controller\ListTransactionsController::class)
-        ->get('/transactions', 'transactions.index', Api\Controller\ListTransactionsController::class)
-        ->get('/get-all-transactions', 'transactions.show', Api\Controller\ShowTransactionController::class)
-        ->post('/transactions', 'transactions.create', Api\Controller\CreateTransactionController::class)
-        ->patch('/transactions/{id}', 'transactions.update', Api\Controller\UpdateTransactionController::class)
-        ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class)
-        ->get('/transaction-logs', 'transactionlogs.index', Api\Controller\ListTransactionLogsController::class)
-        ->post('/transaction-logs', 'transactionlogs.create', Api\Controller\CreateTransactionLogsController::class)
-        ->get('/pay-requests', 'pay-requests.index', Api\Controller\ListPayRequestsController::class)
-        ->post('/pay-requests', 'pay-requests.create', Api\Controller\UpdatePayRequestController::class)
-        ->post('/pay-requests/{id}', 'pay-requests.update', Api\Controller\UpdatePayRequestController::class),
+        ->get('/admin/transactions', 'transactions.admin.index', Api\Controller\Transaction\ListTransactionsController::class)
+
+        ->get('/transactions', 'transactions.index', Api\Controller\Transaction\ListTransactionsController::class)
+        ->get('/get-all-transactions', 'transactions.show', Api\Controller\Transaction\ShowTransactionController::class)
+        ->post('/transactions', 'transactions.create', Api\Controller\Transaction\CreateTransactionController::class)
+        ->patch('/transactions/{id}', 'transactions.update', Api\Controller\Transaction\UpdateTransactionController::class)
+        ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\Transaction\DeleteTransactionController::class)
+
+        ->get('/transaction-logs', 'transactionlogs.index', Api\Controller\TransactionLog\ListTransactionLogsController::class)
+        ->post('/transaction-logs', 'transactionlogs.create', Api\Controller\TransactionLog\CreateTransactionLogsController::class)
+
+        ->get('/pay-requests', 'pay-requests.index', Api\Controller\PayResquest\ListPayRequestsController::class)
+        ->post('/pay-requests', 'pay-requests.create', Api\Controller\PayResquest\CreatePayRequestController::class),
     (new Extend\Notification())
         ->type(TransactionBlueprint::class, TransactionSerializer::class, ['alert']),
 ];

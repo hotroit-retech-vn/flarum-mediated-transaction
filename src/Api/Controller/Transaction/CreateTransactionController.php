@@ -1,6 +1,6 @@
 <?php
 
-namespace RetechVN\MediatedTransaction\Api\Controller;
+namespace RetechVN\MediatedTransaction\Api\Controller\Transaction;
 
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;

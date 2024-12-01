@@ -1,14 +1,41 @@
 import Modal from 'flarum/components/Modal';
 import app from 'flarum/app';
 import Button from 'flarum/components/Button';
+import Alert from 'flarum/common/components/Alert';
 
 export default class PayRequestTransactionModal extends Modal {
   oninit(vnode) {
     super.oninit(vnode);
-    this.bankAccountName = ''; // Tên tài khoản ngân hàng
-    this.bankAccountNumber = ''; // Số tài khoản ngân hàng
-    this.bankName = ''; // Tên ngân hàng
-    this.totalAmount = 500000; // Tổng số tiền có thể rút (có thể lấy từ API hoặc logic tính toán)
+    this.bankAccountName = '';
+    this.bankAccountNumber = '';
+    this.bankName = '';
+    this.totalAmount = 500000;
+    this.bankList = [];
+    this.loadingBanks = false;
+    this.getBankName();
+  }
+
+  async getBankName() {
+    this.loadingBanks = true;
+    try {
+      const response = await app.request({
+        method: 'GET',
+        url: 'https://api.vietqr.io/v2/banks',
+      });
+      console.log(response);
+
+      this.bankList = response.data.map((bank) => ({
+        value: bank.code,
+        label: bank.name,
+      }));
+      console.log(this.bankList);
+    } catch (error) {
+      console.error('Error fetching bank list:', error);
+      this.showAlert('error', 'Không thể tải danh sách ngân hàng. Vui lòng thử lại sau.', 5000);
+    } finally {
+      this.loadingBanks = false;
+      m.redraw(); // Cập nhật giao diện
+    }
   }
 
   title() {
@@ -18,15 +45,37 @@ export default class PayRequestTransactionModal extends Modal {
   content() {
     return (
       <div className="Modal-body">
-        {/* Hiển thị tổng số tiền có thể rút */}
         <div className="Form-group">
           <label>Tổng số tiền có thể rút</label>
           <input className="FormControl" type="text" value={this.totalAmount} disabled />
         </div>
 
-        {/* Tên tài khoản ngân hàng */}
         <div className="Form-group">
-          <label>Tên tài khoản ngân hàng</label>
+          <label>Tên ngân hàng</label>
+          {this.loadingBanks ? (
+            <div>Đang tải danh sách ngân hàng...</div>
+          ) : (
+            <select
+              className="FormControl"
+              value={this.bankName}
+              onchange={(e) => {
+                this.bankName = e.target.value;
+              }}
+            >
+              <option value="" disabled>
+                Chọn ngân hàng
+              </option>
+              {this.bankList.map((bank) => (
+                <option key={bank.value} value={bank.value}>
+                  {bank.label}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        <div className="Form-group">
+          <label>Tên tài khoản</label>
           <input
             className="FormControl"
             type="text"
@@ -38,9 +87,8 @@ export default class PayRequestTransactionModal extends Modal {
           />
         </div>
 
-        {/* Số tài khoản ngân hàng */}
         <div className="Form-group">
-          <label>Số tài khoản ngân hàng</label>
+          <label>Số tài khoản</label>
           <input
             className="FormControl"
             type="text"
@@ -52,30 +100,8 @@ export default class PayRequestTransactionModal extends Modal {
           />
         </div>
 
-        {/* Tên ngân hàng */}
         <div className="Form-group">
-          <label>Tên ngân hàng</label>
-          <input
-            className="FormControl"
-            type="text"
-            placeholder="Nhập tên ngân hàng"
-            value={this.bankName}
-            oninput={(e) => {
-              this.bankName = e.target.value;
-            }}
-          />
-        </div>
-
-        {/* Các nút xác nhận và hủy bỏ */}
-        <div className="Form-group">
-          <Button
-            className="Button Button--primary"
-            type="submit"
-            loading={this.loading}
-            onclick={() => {
-              this.onSubmit();
-            }}
-          >
+          <Button className="Button Button--primary" type="submit" loading={this.loading}>
             Xác nhận
           </Button>
           <Button
@@ -99,17 +125,16 @@ export default class PayRequestTransactionModal extends Modal {
     }, timeClear);
   }
 
-  // Xử lý khi xác nhận yêu cầu rút tiền
-  onSubmit(event) {
+  onsubmit(event) {
     event.preventDefault();
-    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
+    if (this.bankAccountName && this.bankAccountNumber && this.bankName && this.totalAmount) {
       const data = {
         rvn_bankacc_name: this.bankAccountName,
         rvn_bankacc_number: this.bankAccountNumber,
         rvn_bank_name: this.bankName,
         rvn_monney: this.totalAmount,
       };
-      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
+
       app
         .request({
           method: 'POST',
@@ -120,13 +145,16 @@ export default class PayRequestTransactionModal extends Modal {
           this.showAlert('success', 'Yêu cầu rút tiền đã được gửi!', 5000);
           this.onCancelConfirmed();
           this.loading = false;
+          app.modal.close();
         })
         .catch((error) => {
           console.log(error);
-
           this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
           this.loading = false;
         });
+    } else {
+      this.showAlert('error', 'Thiếu thông tin!', 2000);
+      return;
     }
   }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace RetechVN\MediatedTransaction\Api\Controller;
+namespace RetechVN\MediatedTransaction\Api\Controller\BankInfo;
 
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;

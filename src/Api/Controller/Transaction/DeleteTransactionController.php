@@ -1,6 +1,6 @@
 <?php
 
-namespace RetechVN\MediatedTransaction\Api\Controller;
+namespace RetechVN\MediatedTransaction\Api\Controller\Transaction;
 
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\RequestUtil;
@@ -41,10 +41,10 @@ class DeleteTransactionController extends AbstractDeleteController
         $modelId = Arr::get($request->getQueryParams(), 'id');
         $actor = RequestUtil::getActor($request);
         $input = $request->getParsedBody();
-        
+
         $this->bus->dispatch(
             new DeleteTransaction($modelId, $actor, $input)
         );
-        
+
     }
 }

@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 /******/ (() => { // webpackBootstrap
-/******/ 	// runtime can't be in strict mode because a global variable is assign and maybe created.
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/common/index.js":
@@ -167,13 +165,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ PayRequestTransactionModal)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
-/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/Modal */ "flarum/components/Modal");
-/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/app */ "flarum/app");
-/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
-/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _babel_runtime_helpers_esm_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/asyncToGenerator */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Modal */ "flarum/components/Modal");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Modal__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/common/components/Alert */ "flarum/common/components/Alert");
+/* harmony import */ var flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6__);
+
+
+
 
 
 
@@ -182,15 +188,64 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
   function PayRequestTransactionModal() {
     return _Modal.apply(this, arguments) || this;
   }
-  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(PayRequestTransactionModal, _Modal);
+  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_1__["default"])(PayRequestTransactionModal, _Modal);
   var _proto = PayRequestTransactionModal.prototype;
   _proto.oninit = function oninit(vnode) {
     _Modal.prototype.oninit.call(this, vnode);
-    this.bankAccountName = ''; // Tên tài khoản ngân hàng
-    this.bankAccountNumber = ''; // Số tài khoản ngân hàng
-    this.bankName = ''; // Tên ngân hàng
-    this.totalAmount = 500000; // Tổng số tiền có thể rút (có thể lấy từ API hoặc logic tính toán)
+    this.bankAccountName = '';
+    this.bankAccountNumber = '';
+    this.bankName = '';
+    this.totalAmount = 500000;
+    this.bankList = [];
+    this.loadingBanks = false;
+    this.getBankName();
   };
+  _proto.getBankName = /*#__PURE__*/function () {
+    var _getBankName = (0,_babel_runtime_helpers_esm_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__["default"])(/*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee() {
+      var response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee$(_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            this.loadingBanks = true;
+            _context.prev = 1;
+            _context.next = 4;
+            return flarum_app__WEBPACK_IMPORTED_MODULE_4___default().request({
+              method: 'GET',
+              url: 'https://api.vietqr.io/v2/banks'
+            });
+          case 4:
+            response = _context.sent;
+            console.log(response);
+            this.bankList = response.data.map(function (bank) {
+              return {
+                value: bank.code,
+                label: bank.name
+              };
+            });
+            console.log(this.bankList);
+            _context.next = 14;
+            break;
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context["catch"](1);
+            console.error('Error fetching bank list:', _context.t0);
+            this.showAlert('error', 'Không thể tải danh sách ngân hàng. Vui lòng thử lại sau.', 5000);
+          case 14:
+            _context.prev = 14;
+            this.loadingBanks = false;
+            m.redraw(); // Cập nhật giao diện
+            return _context.finish(14);
+          case 18:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, this, [[1, 10, 14, 18]]);
+    }));
+    function getBankName() {
+      return _getBankName.apply(this, arguments);
+    }
+    return getBankName;
+  }();
   _proto.title = function title() {
     return 'Yêu cầu rút tiền';
   };
@@ -207,7 +262,23 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
       disabled: true
     })), m("div", {
       className: "Form-group"
-    }, m("label", null, "T\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
+    }, m("label", null, "T\xEAn ng\xE2n h\xE0ng"), this.loadingBanks ? m("div", null, "\u0110ang t\u1EA3i danh s\xE1ch ng\xE2n h\xE0ng...") : m("select", {
+      className: "FormControl",
+      value: this.bankName,
+      onchange: function onchange(e) {
+        _this.bankName = e.target.value;
+      }
+    }, m("option", {
+      value: "",
+      disabled: true
+    }, "Ch\u1ECDn ng\xE2n h\xE0ng"), this.bankList.map(function (bank) {
+      return m("option", {
+        key: bank.value,
+        value: bank.value
+      }, bank.label);
+    }))), m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\xEAn t\xE0i kho\u1EA3n"), m("input", {
       className: "FormControl",
       type: "text",
       placeholder: "Nh\u1EADp t\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
@@ -217,7 +288,7 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
       }
     })), m("div", {
       className: "Form-group"
-    }, m("label", null, "S\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
+    }, m("label", null, "S\u1ED1 t\xE0i kho\u1EA3n"), m("input", {
       className: "FormControl",
       type: "text",
       placeholder: "Nh\u1EADp s\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
@@ -227,24 +298,11 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
       }
     })), m("div", {
       className: "Form-group"
-    }, m("label", null, "T\xEAn ng\xE2n h\xE0ng"), m("input", {
-      className: "FormControl",
-      type: "text",
-      placeholder: "Nh\u1EADp t\xEAn ng\xE2n h\xE0ng",
-      value: this.bankName,
-      oninput: function oninput(e) {
-        _this.bankName = e.target.value;
-      }
-    })), m("div", {
-      className: "Form-group"
-    }, m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+    }, m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default()), {
       className: "Button Button--primary",
       type: "submit",
-      loading: this.loading,
-      onclick: function onclick() {
-        _this.onSubmit();
-      }
-    }, "X\xE1c nh\u1EADn"), m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+      loading: this.loading
+    }, "X\xE1c nh\u1EADn"), m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default()), {
       className: "Button Button--secondary",
       onclick: function onclick() {
         _this.onCancelConfirmed();
@@ -262,30 +320,26 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
     if (timeClear === void 0) {
       timeClear = 5000;
     }
-    flarum_app__WEBPACK_IMPORTED_MODULE_2___default().alerts.show(Alert, {
+    flarum_app__WEBPACK_IMPORTED_MODULE_4___default().alerts.show((flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_6___default()), {
       type: type
     }, message);
     setTimeout(function () {
-      flarum_app__WEBPACK_IMPORTED_MODULE_2___default().alerts.clear();
+      flarum_app__WEBPACK_IMPORTED_MODULE_4___default().alerts.clear();
     }, timeClear);
-  }
-
-  // Xử lý khi xác nhận yêu cầu rút tiền
-  ;
-  _proto.onSubmit = function onSubmit(event) {
+  };
+  _proto.onsubmit = function onsubmit(event) {
     var _this2 = this;
     event.preventDefault();
-    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
+    if (this.bankAccountName && this.bankAccountNumber && this.bankName && this.totalAmount) {
       var data = {
         rvn_bankacc_name: this.bankAccountName,
         rvn_bankacc_number: this.bankAccountNumber,
         rvn_bank_name: this.bankName,
         rvn_monney: this.totalAmount
       };
-      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
-      flarum_app__WEBPACK_IMPORTED_MODULE_2___default().request({
+      flarum_app__WEBPACK_IMPORTED_MODULE_4___default().request({
         method: 'POST',
-        url: flarum_app__WEBPACK_IMPORTED_MODULE_2___default().forum.attribute('apiUrl') + '/pay-requests',
+        url: flarum_app__WEBPACK_IMPORTED_MODULE_4___default().forum.attribute('apiUrl') + '/pay-requests',
         body: {
           data: data
         }
@@ -293,11 +347,15 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
         _this2.showAlert('success', 'Yêu cầu rút tiền đã được gửi!', 5000);
         _this2.onCancelConfirmed();
         _this2.loading = false;
+        flarum_app__WEBPACK_IMPORTED_MODULE_4___default().modal.close();
       })["catch"](function (error) {
         console.log(error);
         _this2.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
         _this2.loading = false;
       });
+    } else {
+      this.showAlert('error', 'Thiếu thông tin!', 2000);
+      return;
     }
   }
 
@@ -312,7 +370,7 @@ var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
     return 'PayRequestTransactionModal';
   };
   return PayRequestTransactionModal;
-}((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
+}((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_3___default()));
 
 
 /***/ }),
@@ -1558,6 +1616,404 @@ module.exports = flarum.core.compat['helpers/listItems'];
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/helpers/regeneratorRuntime.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/regeneratorRuntime.js ***!
+  \*******************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var _typeof = (__webpack_require__(/*! ./typeof.js */ "./node_modules/@babel/runtime/helpers/typeof.js")["default"]);
+function _regeneratorRuntime() {
+  "use strict";
+
+  /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+  module.exports = _regeneratorRuntime = function _regeneratorRuntime() {
+    return e;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports;
+  var t,
+    e = {},
+    r = Object.prototype,
+    n = r.hasOwnProperty,
+    o = Object.defineProperty || function (t, e, r) {
+      t[e] = r.value;
+    },
+    i = "function" == typeof Symbol ? Symbol : {},
+    a = i.iterator || "@@iterator",
+    c = i.asyncIterator || "@@asyncIterator",
+    u = i.toStringTag || "@@toStringTag";
+  function define(t, e, r) {
+    return Object.defineProperty(t, e, {
+      value: r,
+      enumerable: !0,
+      configurable: !0,
+      writable: !0
+    }), t[e];
+  }
+  try {
+    define({}, "");
+  } catch (t) {
+    define = function define(t, e, r) {
+      return t[e] = r;
+    };
+  }
+  function wrap(t, e, r, n) {
+    var i = e && e.prototype instanceof Generator ? e : Generator,
+      a = Object.create(i.prototype),
+      c = new Context(n || []);
+    return o(a, "_invoke", {
+      value: makeInvokeMethod(t, r, c)
+    }), a;
+  }
+  function tryCatch(t, e, r) {
+    try {
+      return {
+        type: "normal",
+        arg: t.call(e, r)
+      };
+    } catch (t) {
+      return {
+        type: "throw",
+        arg: t
+      };
+    }
+  }
+  e.wrap = wrap;
+  var h = "suspendedStart",
+    l = "suspendedYield",
+    f = "executing",
+    s = "completed",
+    y = {};
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+  var p = {};
+  define(p, a, function () {
+    return this;
+  });
+  var d = Object.getPrototypeOf,
+    v = d && d(d(values([])));
+  v && v !== r && n.call(v, a) && (p = v);
+  var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p);
+  function defineIteratorMethods(t) {
+    ["next", "throw", "return"].forEach(function (e) {
+      define(t, e, function (t) {
+        return this._invoke(e, t);
+      });
+    });
+  }
+  function AsyncIterator(t, e) {
+    function invoke(r, o, i, a) {
+      var c = tryCatch(t[r], t, o);
+      if ("throw" !== c.type) {
+        var u = c.arg,
+          h = u.value;
+        return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) {
+          invoke("next", t, i, a);
+        }, function (t) {
+          invoke("throw", t, i, a);
+        }) : e.resolve(h).then(function (t) {
+          u.value = t, i(u);
+        }, function (t) {
+          return invoke("throw", t, i, a);
+        });
+      }
+      a(c.arg);
+    }
+    var r;
+    o(this, "_invoke", {
+      value: function value(t, n) {
+        function callInvokeWithMethodAndArg() {
+          return new e(function (e, r) {
+            invoke(t, n, e, r);
+          });
+        }
+        return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
+      }
+    });
+  }
+  function makeInvokeMethod(e, r, n) {
+    var o = h;
+    return function (i, a) {
+      if (o === f) throw Error("Generator is already running");
+      if (o === s) {
+        if ("throw" === i) throw a;
+        return {
+          value: t,
+          done: !0
+        };
+      }
+      for (n.method = i, n.arg = a;;) {
+        var c = n.delegate;
+        if (c) {
+          var u = maybeInvokeDelegate(c, n);
+          if (u) {
+            if (u === y) continue;
+            return u;
+          }
+        }
+        if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) {
+          if (o === h) throw o = s, n.arg;
+          n.dispatchException(n.arg);
+        } else "return" === n.method && n.abrupt("return", n.arg);
+        o = f;
+        var p = tryCatch(e, r, n);
+        if ("normal" === p.type) {
+          if (o = n.done ? s : l, p.arg === y) continue;
+          return {
+            value: p.arg,
+            done: n.done
+          };
+        }
+        "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg);
+      }
+    };
+  }
+  function maybeInvokeDelegate(e, r) {
+    var n = r.method,
+      o = e.iterator[n];
+    if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y;
+    var i = tryCatch(o, e.iterator, r.arg);
+    if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y;
+    var a = i.arg;
+    return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y);
+  }
+  function pushTryEntry(t) {
+    var e = {
+      tryLoc: t[0]
+    };
+    1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e);
+  }
+  function resetTryEntry(t) {
+    var e = t.completion || {};
+    e.type = "normal", delete e.arg, t.completion = e;
+  }
+  function Context(t) {
+    this.tryEntries = [{
+      tryLoc: "root"
+    }], t.forEach(pushTryEntry, this), this.reset(!0);
+  }
+  function values(e) {
+    if (e || "" === e) {
+      var r = e[a];
+      if (r) return r.call(e);
+      if ("function" == typeof e.next) return e;
+      if (!isNaN(e.length)) {
+        var o = -1,
+          i = function next() {
+            for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next;
+            return next.value = t, next.done = !0, next;
+          };
+        return i.next = i;
+      }
+    }
+    throw new TypeError(_typeof(e) + " is not iterable");
+  }
+  return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", {
+    value: GeneratorFunctionPrototype,
+    configurable: !0
+  }), o(GeneratorFunctionPrototype, "constructor", {
+    value: GeneratorFunction,
+    configurable: !0
+  }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) {
+    var e = "function" == typeof t && t.constructor;
+    return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name));
+  }, e.mark = function (t) {
+    return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t;
+  }, e.awrap = function (t) {
+    return {
+      __await: t
+    };
+  }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () {
+    return this;
+  }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) {
+    void 0 === i && (i = Promise);
+    var a = new AsyncIterator(wrap(t, r, n, o), i);
+    return e.isGeneratorFunction(r) ? a : a.next().then(function (t) {
+      return t.done ? t.value : a.next();
+    });
+  }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () {
+    return this;
+  }), define(g, "toString", function () {
+    return "[object Generator]";
+  }), e.keys = function (t) {
+    var e = Object(t),
+      r = [];
+    for (var n in e) r.push(n);
+    return r.reverse(), function next() {
+      for (; r.length;) {
+        var t = r.pop();
+        if (t in e) return next.value = t, next.done = !1, next;
+      }
+      return next.done = !0, next;
+    };
+  }, e.values = values, Context.prototype = {
+    constructor: Context,
+    reset: function reset(e) {
+      if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t);
+    },
+    stop: function stop() {
+      this.done = !0;
+      var t = this.tryEntries[0].completion;
+      if ("throw" === t.type) throw t.arg;
+      return this.rval;
+    },
+    dispatchException: function dispatchException(e) {
+      if (this.done) throw e;
+      var r = this;
+      function handle(n, o) {
+        return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o;
+      }
+      for (var o = this.tryEntries.length - 1; o >= 0; --o) {
+        var i = this.tryEntries[o],
+          a = i.completion;
+        if ("root" === i.tryLoc) return handle("end");
+        if (i.tryLoc <= this.prev) {
+          var c = n.call(i, "catchLoc"),
+            u = n.call(i, "finallyLoc");
+          if (c && u) {
+            if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
+            if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
+          } else if (c) {
+            if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
+          } else {
+            if (!u) throw Error("try statement without catch or finally");
+            if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
+          }
+        }
+      }
+    },
+    abrupt: function abrupt(t, e) {
+      for (var r = this.tryEntries.length - 1; r >= 0; --r) {
+        var o = this.tryEntries[r];
+        if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) {
+          var i = o;
+          break;
+        }
+      }
+      i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null);
+      var a = i ? i.completion : {};
+      return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a);
+    },
+    complete: function complete(t, e) {
+      if ("throw" === t.type) throw t.arg;
+      return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y;
+    },
+    finish: function finish(t) {
+      for (var e = this.tryEntries.length - 1; e >= 0; --e) {
+        var r = this.tryEntries[e];
+        if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y;
+      }
+    },
+    "catch": function _catch(t) {
+      for (var e = this.tryEntries.length - 1; e >= 0; --e) {
+        var r = this.tryEntries[e];
+        if (r.tryLoc === t) {
+          var n = r.completion;
+          if ("throw" === n.type) {
+            var o = n.arg;
+            resetTryEntry(r);
+          }
+          return o;
+        }
+      }
+      throw Error("illegal catch attempt");
+    },
+    delegateYield: function delegateYield(e, r, n) {
+      return this.delegate = {
+        iterator: values(e),
+        resultName: r,
+        nextLoc: n
+      }, "next" === this.method && (this.arg = t), y;
+    }
+  }, e;
+}
+module.exports = _regeneratorRuntime, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/typeof.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
+  \*******************************************************/
+/***/ ((module) => {
+
+function _typeof(o) {
+  "@babel/helpers - typeof";
+
+  return module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+    return typeof o;
+  } : function (o) {
+    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports, _typeof(o);
+}
+module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/regenerator/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// TODO(Babel 8): Remove this file.
+
+var runtime = __webpack_require__(/*! ../helpers/regeneratorRuntime */ "./node_modules/@babel/runtime/helpers/regeneratorRuntime.js")();
+module.exports = runtime;
+
+// Copied from https://github.com/facebook/regenerator/blob/main/packages/runtime/runtime.js#L736=
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ _asyncToGenerator)
+/* harmony export */ });
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
+  try {
+    var i = n[a](c),
+      u = i.value;
+  } catch (n) {
+    return void e(n);
+  }
+  i.done ? t(u) : Promise.resolve(u).then(r, o);
+}
+function _asyncToGenerator(n) {
+  return function () {
+    var t = this,
+      e = arguments;
+    return new Promise(function (r, o) {
+      var a = n.apply(t, e);
+      function _next(n) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "next", n);
+      }
+      function _throw(n) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n);
+      }
+      _next(void 0);
+    });
+  };
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/esm/extends.js":
 /*!************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/extends.js ***!
@@ -1707,7 +2163,4 @@ __webpack_require__.r(__webpack_exports__);
 module.exports = __webpack_exports__;
 /******/ })()
 ;
-=======
-(()=>{var t={n:n=>{var r=n&&n.__esModule?()=>n.default:()=>n;return t.d(r,{a:r}),r},d:(n,r)=>{for(var e in r)t.o(r,e)&&!t.o(n,e)&&Object.defineProperty(n,e,{enumerable:!0,get:r[e]})},o:(t,n)=>Object.prototype.hasOwnProperty.call(t,n)};(()=>{"use strict";const n=flarum.core.compat["common/app"];t.n(n)().initializers.add("retechvn/mediated-transaction",(function(){console.log("[retechvn/mediated-transaction] Hello, forum and admin!")}));const r=flarum.core.compat["forum/app"];var e=t.n(r);const a=flarum.core.compat["components/LinkButton"];var i=t.n(a);const s=flarum.core.compat["common/extend"],o=flarum.core.compat["components/IndexPage"];var c=t.n(o);function u(t,n){return u=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(t,n){return t.__proto__=n,t},u(t,n)}function l(t,n){t.prototype=Object.create(n.prototype),t.prototype.constructor=t,u(t,n)}const d=flarum.core.compat["common/components/Page"];var h=t.n(d);const v=flarum.core.compat["helpers/listItems"];var p=t.n(v);const _=flarum.core.compat["components/Button"];var f=t.n(_);const g=flarum.core.compat["common/components/Alert"];var b=t.n(g);const y=flarum.core.compat["components/Modal"];var N=t.n(y);const C=flarum.core.compat.app;var k=t.n(C),w=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n)},r.title=function(){return"Thanh Toán Giao Dịch"},r.content=function(){return m(".Modal-body .row",[m(".Form-group",{style:"width: 100%; text-align: center;"},[m("a",{href:"https://me-qr.com",style:"cursor:pointer;display:block",border:"0"},[m("img",{src:"https://cdn2.me-qr.com/qr/129980334.png?v=1728835376",alt:"Create QR code for free"})])]),m(".Form-group ",{style:"width: 100%;"},[f().component({type:"submit",className:"Button Button--primary Button--block"},"Tiếp tục tạo giao dịch")])])},r.onsubmit=function(t){t.preventDefault(),this.attrs.onsubmit(!0),k().modal.close()},n}(N()),T=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.loading=!0,this.user_current=e().session.user,this.initializeData(),this.resultsUser=[],this.showDropdown=!1,this.handleClickOutside=this.handleClickOutside.bind(this)},r.initializeData=function(){this.data={rvn_creator_id:this.user_current.data.id,rvn_receiver_id:"",rvn_amount:0,rvn_fee:.1,rvn_payer_id:this.user_current.data.id,rvn_note:""},this.rvn_creator_name=e().session.user.username(),this.rvn_receiver_name="",this.rvn_service_fee=0,this.rvn_total_amount=0,this.rvn_receiver_name_search="",this.rvn_receiver_name_select=""},r.oncreate=function(n){t.prototype.oncreate.call(this,n),e().setTitle("Giao dịch trung gian"),e().setTitleCount(0),document.addEventListener("click",this.handleClickOutside)},r.onremove=function(){document.removeEventListener("click",this.handleClickOutside)},r.view=function(){return m(".IndexPage",[c().prototype.hero(),m(".container",[m(".sideNavContainer",[this.renderSidebar(),this.renderForm()])])])},r.renderSidebar=function(){return m("nav.IndexPage-nav.sideNav",m("ul",p()(c().prototype.sidebarItems().toArray())))},r.renderForm=function(){var t=this;return m(".IndexPage-results.sideNavOffset",[m("div.retechvn__text-center",m("h2","Giao dịch trung gian")),m(".Modal-body.rvn__body-form .row",[this.renderInput("Tên đồ án","Nhập tên đồ án",this.rvn_creator_name+(""!=this.rvn_receiver_name?"__"+this.rvn_receiver_name:""),!0),this.renderReceiverInput("Tên đối tác","Nhập tên đối tác cần tìm kiếm"),this.renderNumberInput("Tiền thuê",this.data.rvn_amount,this.handleRentChange.bind(this)),this.renderInput("Phí dịch vụ ("+100*this.data.rvn_fee+"%)","",this.rvn_service_fee,!0),this.renderRadioGroup("Người trả phí","Bạn trả phí","Đối tác trả phi"),this.renderInput("Tổng tiền bạn phải trả","",this.rvn_total_amount,!0),this.renderTextarea("Ghi chú",this.data.rvn_note,(function(n){return t.data.rvn_note=n.target.value})),this.renderCheckbox(),this.renderSubmitButton()])])},r.renderInput=function(t,n,r,e){return void 0===e&&(e=!1),m(".Form-group.col.col-md-6",[m("label",t),m("input.FormControl",{value:r,disabled:e,placeholder:n})])},r.renderReceiverInput=function(t,n){var r=this;return m(".Form-group.position-relative.col.col-md-6",[m("label",[t,m("span",{className:this.data.rvn_receiver_id?"rvn__text-green":"rvn__text-red"},this.data.rvn_receiver_id?" ("+this.rvn_receiver_name_select+")":" (Chưa chọn)")]),m("input.FormControl",{value:this.rvn_receiver_name_search,placeholder:n,onfocus:function(){return r.showDropdown=!0},onkeyup:function(t){r.rvn_receiver_name_search=t.target.value,setTimeout((function(){return r.search(t.target.value)}),100)}}),this.showDropdown&&this.renderDropdown()])},r.renderDropdown=function(){return m(".search-results",this.resultsUser.length?this.resultsUser.map(this.renderDropdownItem.bind(this)):m("div.no-results.rvn__mx2","Không có dữ liệu"))},r.renderDropdownItem=function(t){var n=this;return m("div.search-result-item",{onclick:function(){return n.selectReceiver(t)}},[t.avatarUrl()?m("img.Avatar.rvn__avatar",{src:t.avatarUrl(),alt:t.displayName()}):m("span.Avatar.rvn__avatar",{style:this.avatarStyle(t)},t.displayName().charAt(0).toUpperCase()),m("span.username","  "+t.displayName()+" ("+t.username()+")")])},r.renderNumberInput=function(t,n,r){return m(".Form-group.col.col-md-6",[m("label",t+" ("+this.formatCurrency(n)+")"),m("input[type=number].FormControl",{value:n,onchange:r})])},r.renderRadioGroup=function(t,n,r){return m(".Form-group.col.col-md-6",[m("label",t),m(".radio-group",[this.renderRadioOption(n,this.data.rvn_creator_id,this.rvn_creator_name,this.data.rvn_payer_id==this.data.rvn_creator_id),this.renderRadioOption(r,this.data.rvn_receiver_id,this.rvn_receiver_name,this.data.rvn_payer_id==this.data.rvn_receiver_id,!this.data.rvn_receiver_id)])])},r.renderRadioOption=function(t,n,r,e,a){var i=this;return void 0===a&&(a=!1),m("label",[m("input[type=radio]",{name:"fee_payer",value:n,checked:e,disabled:a,onchange:function(t){return i.handleFeePayerChange(t)}})," "+t+" ("+r+")"])},r.renderTextarea=function(t,n,r){return m(".Form-group.col.col-12.rvn_note",[m("label",t),m("textarea.FormControl",{value:n,onchange:r})])},r.renderCheckbox=function(){var t=this;return m(".Form-group.col",[m("label",[m("input[type=checkbox]",{checked:this.isChecked,onchange:function(n){return t.isChecked=n.target.checked}})," Đồng ý với điều khoản và điều kiện!"])])},r.renderSubmitButton=function(){var t=this;return m(".Form-group.col.col-12",[f().component({type:"button",className:"Button Button--primary Button--block",onclick:function(n){return t.onsubmit(n)}},"Tạo giao dịch")])},r.handleRentChange=function(t){this.data.rvn_amount=+t.target.value,this.calculateTotal()},r.handleFeePayerChange=function(t){this.data.rvn_payer_id=t.target.value,this.calculateTotal()},r.selectReceiver=function(t){this.rvn_receiver_name=t.username(),this.rvn_receiver_name_search="",this.rvn_receiver_name_select=t.displayName()+" ("+t.username()+")",this.data.rvn_receiver_id=t.data.id,this.showDropdown=!1},r.avatarStyle=function(t){return{"--avatar-bg":t.color(),"font-size":"20px"}},r.validateForm=function(){for(var t=this.data,n=0,r=[[!t.rvn_receiver_id,"Chưa chọn tên đối tác."],[t.rvn_amount<=0,"Tiền thuê phải lớn hơn 0."],[!t.rvn_fee,"Phí dịch vụ không hợp lệ."],[!t.rvn_payer_id,"Người trả phí chưa được chọn."],[!this.isChecked,"Bạn phải đồng ý với điều khoản và điều kiện."]];n<r.length;n++){var e=r[n],a=e[0],i=e[1];if(a)return this.showAlert("error",i,5e3),!1}return!0},r.formatCurrency=function(t){return(+t).toLocaleString("vi-VN",{style:"currency",currency:"VND",minimumFractionDigits:0,maximumFractionDigits:0})},r.calculateTotal=function(){var t=+this.data.rvn_amount||0,n=.1*t;this.rvn_service_fee=this.formatCurrency(n),this.rvn_total_amount=this.formatCurrency(this.data.rvn_payer_id==this.data.rvn_creator_id?t+n:t)},r.search=function(t){var n=this;t.trim()?e().store.find("users",{filter:{q:t}}).then((function(t){n.resultsUser=t.filter((function(t){return t.data.id!=n.user_current.id()})),n.showDropdown=!0})):(this.resultsUser=[],this.showDropdown=!1)},r.handleClickOutside=function(t){t.target.closest(".FormControl")||t.target.closest(".search-results")||(this.showDropdown=!1,m.redraw())},r.showAlert=function(t,n,r){void 0===t&&(t="success"),void 0===n&&(n=""),void 0===r&&(r=5e3),e().alerts.show(b(),{type:t},n),setTimeout((function(){e().alerts.clear()}),r)},r.onsubmit=function(t){var n=this;t.preventDefault(),this.loading=!0;var r={rvn_creator_id:Number(this.data.rvn_creator_id),rvn_receiver_id:Number(this.data.rvn_receiver_id),rvn_amount:Number(this.data.rvn_amount),rvn_fee:this.data.rvn_fee,rvn_payer_id:Number(this.data.rvn_payer_id),rvn_note:this.data.rvn_note};e().modal.show(w,{onsubmit:function(t){e().request({method:"POST",url:e().forum.attribute("apiUrl")+"/transactions",body:{data:r}}).then((function(t){n.showAlert("success","Tạo giao dịch thành công!",5e3),n.initializeData(),n.loading=!1})).catch((function(t){console.log(t),n.showAlert("error","Có lỗi xảy ra. Vui lòng thử lại!",5e3),n.loading=!1}))}})},n}(h());const x=flarum.core.compat["forum/components/HeaderSecondary"];var I=t.n(x);const F=flarum.core.compat["components/UserPage"];var R=t.n(F);function B(){return B=Object.assign?Object.assign.bind():function(t){for(var n=1;n<arguments.length;n++){var r=arguments[n];for(var e in r)({}).hasOwnProperty.call(r,e)&&(t[e]=r[e])}return t},B.apply(null,arguments)}const D=flarum.core.compat.Component;var A=t.n(D);const P=flarum.core.compat["components/LoadingIndicator"];var S=t.n(P);const U=flarum.core.compat["common/components/Dropdown"];var O=t.n(U),H=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.transId=this.attrs.transId,this.currentUserId=this.attrs.userId,this.loading=!0,this.moreResults=!1,this.tranlogs=[],this.loadData(this.transId)},r.parseResults=function(t){return this.moreResults=!!t.payload.links&&!!t.payload.links.next,[].push.apply(this.tranlogs,t.payload.data),this.loading=!1,m.redraw(),t},r.loadData=function(t,n){void 0===n&&(n=0),k().store.find("transaction-logs",{filter:{transactionId:t},page:{offset:n}}).catch((function(){})).then(this.parseResults.bind(this))},r.title=function(){return"Chi tiết giao dịch"},r.content=function(){var t=this;return this.loading?m("div",{className:"Modal-body"},S().component({size:"large"})):m("div",{className:"Modal-body sideNavContainer"},m("table",{className:"TransactionLogsTable rvn__table"},m("thead",{class:"rvn__thead"},m("tr",{class:"rvn__tr"},m("th",{class:"rvn__th"},"STT"),m("th",{class:"rvn__th"},"Trạng thái"),m("th",{class:"rvn__th"},"Lý do"),m("th",{class:"rvn__th"},"Ngày cập nhật"))),m("tbody",{class:"rvn__tbody"},this.tranlogs.length?this.tranlogs.map((function(n,r){return m("tr",{key:n.id,class:"rvn__tr"},m("td",{class:"rvn__th"},r+1),m("td",{class:"rvn__th"},t.showText(t.currentUserId,n.attributes.creator,n.attributes.rvn_status,n.attributes.transaction)),m("td",{class:"rvn__th"},n.attributes.rvn_reason||"N/A"),m("td",{class:"rvn__th"},n.attributes.updated_at))})):m("tr",null,m("td",{class:"rvn__th",colSpan:"6"},"Không có dữ liệu")))))},r.showText=function(t,n,r,e){var a="";return 1==r&&(a="["+n.username+"] đã tạo giao dịch"),2==r&&(a="["+n.username+"] đã thanh toán giao dịch"),3==r&&(a="["+n.username+"] đã hoàn thành giao dịch"),4==r&&(a="["+n.username+"] đã hủy giao dịch"),5==r&&(a="["+n.username+"] đã khiếu nại giao dịch"),a},r.onsubmit=function(t){t.preventDefault()},r.className=function(){return"DetailTransactionModal"},n}(N()),M=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.transId=this.attrs.transId,this.currentUserId=this.attrs.userId,this.reason="",this.loading=!1,this.status=this.attrs.status,this.status_old=this.attrs.status_old,this.onCancelConfirmed=this.attrs.onCancelConfirmed||function(){}},r.titleStatus=function(t){switch(t){case 3:return"Xác nhận hoàn thành giao dịch";case 4:return"Xác nhận hủy giao dịch";case 5:return"Xác nhận khiếu nại giao dịch";default:this.hide()}},r.title=function(){return this.titleStatus(this.status)},r.content=function(){var t=this;return m("div",{className:"Modal-body"},3!==this.status?m("div",{className:"Form-group"},m("label",null,"Lý do"),m("input",{className:"FormControl",type:"text",placeholder:"Nhập lý do",value:this.reason,oninput:function(n){t.reason=n.target.value}})):"",m("div",{className:"Form-group"},m(f(),{className:"Button Button--primary",type:"submit",loading:this.loading},"Xác nhận"),m(f(),{className:"Button Button--secondary",onclick:function(){t.onCancelConfirmed(),t.hide()}},"Hủy bỏ")))},r.onsubmit=function(t){var n=this;t.preventDefault(),this.loading=!0;var r={transId:Number(this.transId),userId:Number(this.currentUserId),reason:this.reason,status:this.status,status_old:this.status_old};k().request({method:"POST",url:k().forum.attribute("apiUrl")+"/transaction-logs",body:{data:r}}).then((function(t){n.loading=!1,n.onCancelConfirmed(),n.hide(),k().alerts.show({type:"success"},"Đã cập nhật.")})).catch((function(t){n.loading=!1,k().alerts.show({type:"error"},"Đã xảy ra lỗi. Vui lòng thử lại.")}))},r.className=function(){return"CancelTransactionModal"},n}(N()),L=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.bankAccountName="",this.bankAccountNumber="",this.bankName="",this.totalAmount=5e5},r.title=function(){return"Yêu cầu rút tiền"},r.content=function(){var t=this;return m("div",{className:"Modal-body"},m("div",{className:"Form-group"},m("label",null,"Tổng số tiền có thể rút"),m("input",{className:"FormControl",type:"text",value:this.totalAmount,disabled:!0})),m("div",{className:"Form-group"},m("label",null,"Tên tài khoản ngân hàng"),m("input",{className:"FormControl",type:"text",placeholder:"Nhập tên tài khoản ngân hàng",value:this.bankAccountName,oninput:function(n){t.bankAccountName=n.target.value}})),m("div",{className:"Form-group"},m("label",null,"Số tài khoản ngân hàng"),m("input",{className:"FormControl",type:"text",placeholder:"Nhập số tài khoản ngân hàng",value:this.bankAccountNumber,oninput:function(n){t.bankAccountNumber=n.target.value}})),m("div",{className:"Form-group"},m("label",null,"Tên ngân hàng"),m("input",{className:"FormControl",type:"text",placeholder:"Nhập tên ngân hàng",value:this.bankName,oninput:function(n){t.bankName=n.target.value}})),m("div",{className:"Form-group"},m(f(),{className:"Button Button--primary",type:"submit",loading:this.loading,onclick:function(){t.onSubmit()}},"Xác nhận"),m(f(),{className:"Button Button--secondary",onclick:function(){t.onCancelConfirmed(),t.hide()}},"Hủy bỏ")))},r.onSubmit=function(){this.bankAccountName&&this.bankAccountNumber&&this.bankName?(k().store.createRecord("withdraw-transaction",{bankAccountName:this.bankAccountName,bankAccountNumber:this.bankAccountNumber,bankName:this.bankName,totalAmount:this.totalAmount}),this.hide(),alert("Yêu cầu rút tiền đã được gửi.")):alert("Vui lòng nhập đầy đủ thông tin!")},r.onCancelConfirmed=function(){this.bankAccountName="",this.bankAccountNumber="",this.bankName=""},r.className=function(){return"WithdrawMonneyTransactionModal"},n}(N()),j=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.loading=!0,this.moreResults=!1,this.transactionHistory=[],this.monneyTransaction={},this.user=this.attrs.params.user,this.loadResults()},r.getStatus=function(t,n,r,e,a,i){if(!n||0===n.length)return 1;var s=n.reduce((function(t,n){return t+parseFloat(n.rvn_amount)}),0)-r,o=this.user.id()===e;if(4===t)return 4;if(o){if(5===t)return 5===a?5:3===a?6:a;if(s>=0){if(3===a)return 3;if([1,2].includes(t))return 2;if(3===t)return 3}return 1}return 5===t?5===i?5:3===i?6:i:3===i?3:2},r.getStatusText=function(t){switch(t){case 3:return"Hoàn thành";case 4:return"Đã hủy";case 5:case 6:return"Đang khiếu nại";default:return"Đang xử lý"}},r.getStatusColor=function(t){switch(t){case 3:return"green";case 4:return"red";case 1:case 2:case 5:case 6:return"orange";default:return"gray"}},r.view=function(){var t=this;this.loading&&S().component({size:"large"});var n=this.monneyTransaction||{};return m("div",null,m("div",{style:"display: flex; justify-content: space-between;"},m("div",{style:"padding-bottom:10px; font-size: 24px; font-weight: bold;"},"Lịch sử giao dịch"),m("button",{class:"btn-withdraw",onclick:function(){k().modal.show(L)}},"Rút Tiền")),m("div",{class:"sideNavContainer"},m("div",{class:"container"},m("div",{class:"row"},m("div",{class:"col-12 col-md-6 col-lg-3"},m("div",{class:"card"},m("div",{class:"card-title"},"Đã chuyển"),m("div",{class:"card-value"},this.formatCurrency(n.total_monney_bank)))),m("div",{class:"col-12 col-md-6 col-lg-3"},m("div",{class:"card"},m("div",{class:"card-title"},"Hoàn thành job"),m("div",{class:"card-value"},this.formatCurrency(n.total_to_pay)))),m("div",{class:"col-12 col-md-6 col-lg-3"},m("div",{class:"card"},m("div",{class:"card-title"},"Đã hoàn trả"),m("div",{class:"card-value"},this.formatCurrency(0)))),m("div",{class:"col-12 col-md-6 col-lg-3"},m("div",{class:"card"},m("div",{class:"card-title"},"Được rút"),m("div",{class:"card-value"},this.formatCurrency(n.total_to_receive))))),m("table",{class:"rvn__table"},m("thead",{class:"rvn__thead"},m("tr",{class:"rvn__tr"},m("th",{class:"rvn__th"},"STT"),m("th",{class:"rvn__th"},"Tên đồ án"),m("th",{class:"rvn__th"},"Tên thợ"),m("th",{class:"rvn__th"},"Tiền thuê"),m("th",{class:"rvn__th"},"Phí"),m("th",{class:"rvn__th"},"Người trả phí"),m("th",{class:"rvn__th"},"Tổng tiền"),m("th",{class:"rvn__th"},"Trạng thái"),m("th",{class:"rvn__th"},"Ngày tạo"),m("th",{class:"rvn__th",style:"width:100px;"},"Chi tiết"))),m("tbody",{class:"rvn__tbody"},this.transactionHistory.map((function(n,r){var e=t.showPrice(t.user.id,n.attributes.creator.id,n.attributes.rvn_payer_id,n.attributes.rvn_amount,n.attributes.rvn_fee),a=t.getStatus(n.attributes.rvn_status,n.attributes.banks,e,n.attributes.creator.id,n.attributes.sender_last_status,n.attributes.receiver_last_status);return m("tr",{class:"rvn__tr",key:n.id,"data-id":n.id},m("td",{class:"rvn__td"},r+1),m("td",{class:"rvn__td"},n.attributes.creator.username+"__"+n.attributes.receiver.username),m("td",{class:"rvn__td"},n.attributes.receiver.username),m("td",{class:"rvn__td"},t.formatCurrency(n.attributes.rvn_amount)),m("td",{class:"rvn__td"},100*n.attributes.rvn_fee,"%"),m("td",{class:"rvn__td"},n.attributes.rvn_payer_id==n.attributes.rvn_receiver_id?n.attributes.receiver.username:n.attributes.creator.username),m("td",{class:"rvn__td"},t.formatCurrency(n.attributes.rvn_amount+n.attributes.rvn_amount*n.attributes.rvn_fee)),m("td",{class:"rvn__td",style:{color:t.getStatusColor(a)}},t.getStatusText(a)),m("td",{class:"rvn__td"},n.attributes.created_at),m("td.rvn__td",m(O(),{className:"User-controls",buttonClassName:"Button Button--icon Button--flat",menuClassName:"Dropdown-menu--right",icon:"fas fa-ellipsis-h"},[m("button.Button.UserList-detailBtn",{title:"Xem chi tiết",onclick:function(){return k().modal.show(H,{transId:n.id,userId:t.user.id()})}},["Xem chi tiết"]),2==a||5==a?m("button.Button.UserList-confirmBtn",{title:"Hoàn thành",onclick:function(){return k().modal.show(M,{transId:n.id,userId:t.user.id(),status:3,status_old:n.attributes.creator.id==t.user.id()?n.attributes.sender_last_status:n.attributes.receiver_last_status,onCancelConfirmed:function(){t.transactionHistory=[],t.loadResults()}})}},["Hoàn thành"]):"",1==a||2==a||5==a?m("button.Button.UserList-cancelBtn",{title:"Hủy",onclick:function(){return k().modal.show(M,{transId:n.id,userId:t.user.id(),status:4,status_old:n.attributes.creator.id==t.user.id()?n.attributes.sender_last_status:n.attributes.receiver_last_status,onCancelConfirmed:function(){t.transactionHistory=[],t.loadResults()}})}},["Hủy"]):"",2==a||3==a&&1!=a?m("button.Button.UserList-complaintsBtn",{title:"Khiếu nại",onclick:function(){return k().modal.show(M,{transId:n.id,userId:t.user.id(),status:5,status_old:n.attributes.creator.id==t.user.id()?n.attributes.sender_last_status:n.attributes.receiver_last_status,onCancelConfirmed:function(){t.transactionHistory=[],t.loadResults()}})}},["Khiếu nại"]):""])))})))))))},r.loadMore=function(){this.loading=!0,this.loadResults(this.transactionHistory.length)},r.showPrice=function(t,n,r,e,a){return n==t&&t==r?a*e:n==t&&t!=r?0:n!=t&&t==r?e+a*e:e},r.caculator=function(t,n,r){return void 0===r&&(r=!1),r?this.formatCurrency(t+n*t):this.formatCurrency(n*t)},r.formatCurrency=function(t){return t||(t=0),(+t).toLocaleString("vi-VN",{style:"currency",currency:"VND",minimumFractionDigits:0,maximumFractionDigits:0})},r.parseResults=function(t){return this.moreResults=!!t.payload.links&&!!t.payload.links.next,[].push.apply(this.transactionHistory,t.payload.data),this.loading=!1,m.redraw(),t},r.parseMonneyResults=function(t){return this.monneyTransaction=B({},t.data.attributes),this.loading=!1,m.redraw(),t},r.hasMoreResults=function(){return this.moreResults},r.loadResults=function(t){return void 0===t&&(t=0),k().request({method:"GET",url:k().forum.attribute("apiUrl")+"/get-all-transactions"}).then(this.parseMonneyResults.bind(this)).catch((function(){})),k().store.find("transactions",{filter:{user:this.user.id()},page:{offset:t}}).catch((function(){})).then(this.parseResults.bind(this))},n}(A()),z=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.oninit=function(n){t.prototype.oninit.call(this,n),this.loadUser(m.route.param("username"))},r.content=function(){return m("div",{className:"TransferHistoryPage"},j.component({params:{user:this.user}}))},n}(R());const G=flarum.core.compat["components/Notification"];var q=t.n(G);flarum.core.compat["common/helpers/username"];var V=function(t){function n(){return t.apply(this,arguments)||this}l(n,t);var r=n.prototype;return r.icon=function(){return"fas fa-exchange-alt"},r.href=function(){return e().route.transaction(this.attrs.notification.subject())},r.content=function(){return e().translator.trans("retechvn-mediated-transaction.forum.notifications.transaction_created_text",{user:this.attrs.notification.fromUser(),transaction:this.attrs.notification.subject()})},n}(q());const X=flarum.core.compat["components/NotificationGrid"];var K=t.n(X);e().initializers.add("retechvn/mediated-transaction",(function(){e().routes.transactionPage={path:"/giao-dich-trung-gian",component:T},e().routes["user.transactionHistoryPage"]={path:"/u/:username/lich-su-giao-dich",component:z},e().notificationComponents.transactionCreated=V,(0,s.extend)(K().prototype,"notificationTypes",(function(t){t.add("transactionCreated",{name:"transactionCreated",icon:"fas fa-exchange-alt",label:e().translator.trans("retechvn-mediated-transaction.forum.notifications.transaction_created_label")})})),(0,s.extend)(c().prototype,"navItems",(function(t){e().session&&e().session.user&&e().session.user&&t.add("transactionPage",m(i(),{href:e().route("transactionPage"),icon:"fas fa-magic"},"Giao dịch trung gian"),100)})),(0,s.extend)(I().prototype,"items",(function(t){e().session&&e().session.user&&e().session.user})),(0,s.extend)(R().prototype,"navItems",(function(t,n){e().session&&e().session.user&&e().session.user.id()==this.user.id()&&t.add("transactionMoney",i().component({href:e().route("user.transactionHistoryPage",{username:this.user.username()}),icon:"fas fa-money-bill"},["Lịch sử giao dịch"]),10)}))}))})(),module.exports={}})();
->>>>>>> c413af9cbb45e6edda3b8c7ac8dd55720c2af614
 //# sourceMappingURL=forum.js.map
