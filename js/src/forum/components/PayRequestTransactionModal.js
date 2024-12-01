@@ -2,7 +2,7 @@ import Modal from 'flarum/components/Modal';
 import app from 'flarum/app';
 import Button from 'flarum/components/Button';
 
-export default class WithdrawMonneyTransactionModal extends Modal {
+export default class PayRequestTransactionModal extends Modal {
   oninit(vnode) {
     super.oninit(vnode);
     this.bankAccountName = ''; // Tên tài khoản ngân hàng
@@ -21,12 +21,7 @@ export default class WithdrawMonneyTransactionModal extends Modal {
         {/* Hiển thị tổng số tiền có thể rút */}
         <div className="Form-group">
           <label>Tổng số tiền có thể rút</label>
-          <input
-            className="FormControl"
-            type="text"
-            value={this.totalAmount}
-            disabled
-          />
+          <input className="FormControl" type="text" value={this.totalAmount} disabled />
         </div>
 
         {/* Tên tài khoản ngân hàng */}
@@ -97,22 +92,41 @@ export default class WithdrawMonneyTransactionModal extends Modal {
     );
   }
 
-  // Xử lý khi xác nhận yêu cầu rút tiền
-  onSubmit() {
-    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
-      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
-      app.store.createRecord('withdraw-transaction', {
-        bankAccountName: this.bankAccountName,
-        bankAccountNumber: this.bankAccountNumber,
-        bankName: this.bankName,
-        totalAmount: this.totalAmount,
-      });
+  showAlert(type = 'success', message = '', timeClear = 5000) {
+    app.alerts.show(Alert, { type: type }, message);
+    setTimeout(() => {
+      app.alerts.clear();
+    }, timeClear);
+  }
 
-      // Đóng modal sau khi gửi yêu cầu
-      this.hide();
-      alert('Yêu cầu rút tiền đã được gửi.');
-    } else {
-      alert('Vui lòng nhập đầy đủ thông tin!');
+  // Xử lý khi xác nhận yêu cầu rút tiền
+  onSubmit(event) {
+    event.preventDefault();
+    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
+      const data = {
+        rvn_bankacc_name: this.bankAccountName,
+        rvn_bankacc_number: this.bankAccountNumber,
+        rvn_bank_name: this.bankName,
+        rvn_monney: this.totalAmount,
+      };
+      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
+      app
+        .request({
+          method: 'POST',
+          url: app.forum.attribute('apiUrl') + '/pay-requests',
+          body: { data },
+        })
+        .then((response) => {
+          this.showAlert('success', 'Yêu cầu rút tiền đã được gửi!', 5000);
+          this.onCancelConfirmed();
+          this.loading = false;
+        })
+        .catch((error) => {
+          console.log(error);
+
+          this.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
+          this.loading = false;
+        });
     }
   }
 
@@ -124,6 +138,6 @@ export default class WithdrawMonneyTransactionModal extends Modal {
   }
 
   className() {
-    return 'WithdrawMonneyTransactionModal';
+    return 'PayRequestTransactionModal';
   }
 }

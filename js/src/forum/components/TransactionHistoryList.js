@@ -4,7 +4,7 @@ import LoadingIndicator from 'flarum/components/LoadingIndicator';
 import Dropdown from 'flarum/common/components/Dropdown';
 import DetailTransactionModal from './DetailTransactionModal';
 import UpdateStatusTransactionModal from './UpdateStatusTransactionModal';
-import WithdrawMonneyTransactionModal from './WithdrawMonneyTransactionModal';
+import PayRequestTransactionModal from './PayRequestTransactionModal';
 
 export default class TransactionHistoryList extends Component {
   oninit(vnode) {
@@ -104,7 +104,7 @@ export default class TransactionHistoryList extends Component {
           <button
             class="btn-withdraw"
             onclick={() => {
-              app.modal.show(WithdrawMonneyTransactionModal);
+              app.modal.show(PayRequestTransactionModal);
             }}
           >
             Rút Tiền

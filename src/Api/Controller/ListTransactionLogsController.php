@@ -11,6 +11,8 @@ use RetechVN\MediatedTransaction\TransactionLogs;
 use Tobscure\JsonApi\Document;
 use RetechVN\MediatedTransaction\Api\Serializer\TransactionLogsSerializer;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\UnauthorizedException;
+
 class ListTransactionLogsController extends AbstractListController
 {
     /**
@@ -38,9 +40,9 @@ class ListTransactionLogsController extends AbstractListController
     {
 
         $actor = RequestUtil::getActor($request);
-        if ($actor->isGuest()) {
-            throw new NotAuthenticatedException();
-        }
+        if ($actor->isGuest())  throw new NotAuthenticatedException();
+        if (!$actor->isAdmin())  throw new UnauthorizedException();
+
         $userId = $actor->id;
         $limit = $this->extractLimit($request);
         $offset = $this->extractOffset($request);

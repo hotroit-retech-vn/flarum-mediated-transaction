@@ -24,18 +24,21 @@ return [
     (new Extend\Frontend('admin'))
         ->js(__DIR__ . '/js/dist/admin.js')
         ->css(__DIR__ . '/less/admin.less')
-        ->route('/giao-dich-trung-gian', 'retechvn/mediated-transaction'),
+        ->route('/giao-dich-trung-gian', 'retechvn/transaction-list')
+        ->route('/yeu-cau-rut-tien', 'retechvn/pay-request-list'),
     new Extend\Locales(__DIR__ . '/locale'),
     (new Extend\Routes('api'))
         ->get('/admin/transactions', 'transactions.admin.index', Api\Controller\ListTransactionsController::class)
-
         ->get('/transactions', 'transactions.index', Api\Controller\ListTransactionsController::class)
         ->get('/get-all-transactions', 'transactions.show', Api\Controller\ShowTransactionController::class)
         ->post('/transactions', 'transactions.create', Api\Controller\CreateTransactionController::class)
         ->patch('/transactions/{id}', 'transactions.update', Api\Controller\UpdateTransactionController::class)
         ->delete('/transactions/{id}', 'transactions.delete', Api\Controller\DeleteTransactionController::class)
         ->get('/transaction-logs', 'transactionlogs.index', Api\Controller\ListTransactionLogsController::class)
-        ->post('/transaction-logs', 'transactionlogs.create', Api\Controller\CreateTransactionLogsController::class),
+        ->post('/transaction-logs', 'transactionlogs.create', Api\Controller\CreateTransactionLogsController::class)
+        ->get('/pay-requests', 'pay-requests.index', Api\Controller\ListPayRequestsController::class)
+        ->post('/pay-requests', 'pay-requests.create', Api\Controller\UpdatePayRequestController::class)
+        ->post('/pay-requests/{id}', 'pay-requests.update', Api\Controller\UpdatePayRequestController::class),
     (new Extend\Notification())
         ->type(TransactionBlueprint::class, TransactionSerializer::class, ['alert']),
 ];

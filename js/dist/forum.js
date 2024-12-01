@@ -155,6 +155,167 @@ var DetailTransactionModal = /*#__PURE__*/function (_Modal) {
 
 /***/ }),
 
+/***/ "./src/forum/components/PayRequestTransactionModal.js":
+/*!************************************************************!*\
+  !*** ./src/forum/components/PayRequestTransactionModal.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ PayRequestTransactionModal)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/Modal */ "flarum/components/Modal");
+/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+var PayRequestTransactionModal = /*#__PURE__*/function (_Modal) {
+  function PayRequestTransactionModal() {
+    return _Modal.apply(this, arguments) || this;
+  }
+  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(PayRequestTransactionModal, _Modal);
+  var _proto = PayRequestTransactionModal.prototype;
+  _proto.oninit = function oninit(vnode) {
+    _Modal.prototype.oninit.call(this, vnode);
+    this.bankAccountName = ''; // Tên tài khoản ngân hàng
+    this.bankAccountNumber = ''; // Số tài khoản ngân hàng
+    this.bankName = ''; // Tên ngân hàng
+    this.totalAmount = 500000; // Tổng số tiền có thể rút (có thể lấy từ API hoặc logic tính toán)
+  };
+  _proto.title = function title() {
+    return 'Yêu cầu rút tiền';
+  };
+  _proto.content = function content() {
+    var _this = this;
+    return m("div", {
+      className: "Modal-body"
+    }, m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\u1ED5ng s\u1ED1 ti\u1EC1n c\xF3 th\u1EC3 r\xFAt"), m("input", {
+      className: "FormControl",
+      type: "text",
+      value: this.totalAmount,
+      disabled: true
+    })), m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
+      className: "FormControl",
+      type: "text",
+      placeholder: "Nh\u1EADp t\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
+      value: this.bankAccountName,
+      oninput: function oninput(e) {
+        _this.bankAccountName = e.target.value;
+      }
+    })), m("div", {
+      className: "Form-group"
+    }, m("label", null, "S\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
+      className: "FormControl",
+      type: "text",
+      placeholder: "Nh\u1EADp s\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
+      value: this.bankAccountNumber,
+      oninput: function oninput(e) {
+        _this.bankAccountNumber = e.target.value;
+      }
+    })), m("div", {
+      className: "Form-group"
+    }, m("label", null, "T\xEAn ng\xE2n h\xE0ng"), m("input", {
+      className: "FormControl",
+      type: "text",
+      placeholder: "Nh\u1EADp t\xEAn ng\xE2n h\xE0ng",
+      value: this.bankName,
+      oninput: function oninput(e) {
+        _this.bankName = e.target.value;
+      }
+    })), m("div", {
+      className: "Form-group"
+    }, m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+      className: "Button Button--primary",
+      type: "submit",
+      loading: this.loading,
+      onclick: function onclick() {
+        _this.onSubmit();
+      }
+    }, "X\xE1c nh\u1EADn"), m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+      className: "Button Button--secondary",
+      onclick: function onclick() {
+        _this.onCancelConfirmed();
+        _this.hide();
+      }
+    }, "H\u1EE7y b\u1ECF")));
+  };
+  _proto.showAlert = function showAlert(type, message, timeClear) {
+    if (type === void 0) {
+      type = 'success';
+    }
+    if (message === void 0) {
+      message = '';
+    }
+    if (timeClear === void 0) {
+      timeClear = 5000;
+    }
+    flarum_app__WEBPACK_IMPORTED_MODULE_2___default().alerts.show(Alert, {
+      type: type
+    }, message);
+    setTimeout(function () {
+      flarum_app__WEBPACK_IMPORTED_MODULE_2___default().alerts.clear();
+    }, timeClear);
+  }
+
+  // Xử lý khi xác nhận yêu cầu rút tiền
+  ;
+  _proto.onSubmit = function onSubmit(event) {
+    var _this2 = this;
+    event.preventDefault();
+    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
+      var data = {
+        rvn_bankacc_name: this.bankAccountName,
+        rvn_bankacc_number: this.bankAccountNumber,
+        rvn_bank_name: this.bankName,
+        rvn_monney: this.totalAmount
+      };
+      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
+      flarum_app__WEBPACK_IMPORTED_MODULE_2___default().request({
+        method: 'POST',
+        url: flarum_app__WEBPACK_IMPORTED_MODULE_2___default().forum.attribute('apiUrl') + '/pay-requests',
+        body: {
+          data: data
+        }
+      }).then(function (response) {
+        _this2.showAlert('success', 'Yêu cầu rút tiền đã được gửi!', 5000);
+        _this2.onCancelConfirmed();
+        _this2.loading = false;
+      })["catch"](function (error) {
+        console.log(error);
+        _this2.showAlert('error', 'Có lỗi xảy ra. Vui lòng thử lại!', 5000);
+        _this2.loading = false;
+      });
+    }
+  }
+
+  // Xử lý khi hủy bỏ
+  ;
+  _proto.onCancelConfirmed = function onCancelConfirmed() {
+    this.bankAccountName = '';
+    this.bankAccountNumber = '';
+    this.bankName = '';
+  };
+  _proto.className = function className() {
+    return 'PayRequestTransactionModal';
+  };
+  return PayRequestTransactionModal;
+}((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
+
+
+/***/ }),
+
 /***/ "./src/forum/components/QRModal.js":
 /*!*****************************************!*\
   !*** ./src/forum/components/QRModal.js ***!
@@ -240,7 +401,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Dropdown__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _DetailTransactionModal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./DetailTransactionModal */ "./src/forum/components/DetailTransactionModal.js");
 /* harmony import */ var _UpdateStatusTransactionModal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./UpdateStatusTransactionModal */ "./src/forum/components/UpdateStatusTransactionModal.js");
-/* harmony import */ var _WithdrawMonneyTransactionModal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./WithdrawMonneyTransactionModal */ "./src/forum/components/WithdrawMonneyTransactionModal.js");
+/* harmony import */ var _PayRequestTransactionModal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./PayRequestTransactionModal */ "./src/forum/components/PayRequestTransactionModal.js");
 
 
 
@@ -347,7 +508,7 @@ var TransactionHistoryList = /*#__PURE__*/function (_Component) {
     }, "L\u1ECBch s\u1EED giao d\u1ECBch"), m("button", {
       "class": "btn-withdraw",
       onclick: function onclick() {
-        flarum_app__WEBPACK_IMPORTED_MODULE_3___default().modal.show(_WithdrawMonneyTransactionModal__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        flarum_app__WEBPACK_IMPORTED_MODULE_3___default().modal.show(_PayRequestTransactionModal__WEBPACK_IMPORTED_MODULE_8__["default"]);
       }
     }, "R\xFAt Ti\u1EC1n")), m("div", {
       "class": "sideNavContainer"
@@ -1092,139 +1253,6 @@ var UpdateStatusTransactionModal = /*#__PURE__*/function (_Modal) {
     return 'CancelTransactionModal';
   };
   return UpdateStatusTransactionModal;
-}((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
-
-
-/***/ }),
-
-/***/ "./src/forum/components/WithdrawMonneyTransactionModal.js":
-/*!****************************************************************!*\
-  !*** ./src/forum/components/WithdrawMonneyTransactionModal.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ WithdrawMonneyTransactionModal)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
-/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/Modal */ "flarum/components/Modal");
-/* harmony import */ var flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/app */ "flarum/app");
-/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
-/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_3__);
-
-
-
-
-var WithdrawMonneyTransactionModal = /*#__PURE__*/function (_Modal) {
-  function WithdrawMonneyTransactionModal() {
-    return _Modal.apply(this, arguments) || this;
-  }
-  (0,_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(WithdrawMonneyTransactionModal, _Modal);
-  var _proto = WithdrawMonneyTransactionModal.prototype;
-  _proto.oninit = function oninit(vnode) {
-    _Modal.prototype.oninit.call(this, vnode);
-    this.bankAccountName = ''; // Tên tài khoản ngân hàng
-    this.bankAccountNumber = ''; // Số tài khoản ngân hàng
-    this.bankName = ''; // Tên ngân hàng
-    this.totalAmount = 500000; // Tổng số tiền có thể rút (có thể lấy từ API hoặc logic tính toán)
-  };
-  _proto.title = function title() {
-    return 'Yêu cầu rút tiền';
-  };
-  _proto.content = function content() {
-    var _this = this;
-    return m("div", {
-      className: "Modal-body"
-    }, m("div", {
-      className: "Form-group"
-    }, m("label", null, "T\u1ED5ng s\u1ED1 ti\u1EC1n c\xF3 th\u1EC3 r\xFAt"), m("input", {
-      className: "FormControl",
-      type: "text",
-      value: this.totalAmount,
-      disabled: true
-    })), m("div", {
-      className: "Form-group"
-    }, m("label", null, "T\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
-      className: "FormControl",
-      type: "text",
-      placeholder: "Nh\u1EADp t\xEAn t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
-      value: this.bankAccountName,
-      oninput: function oninput(e) {
-        _this.bankAccountName = e.target.value;
-      }
-    })), m("div", {
-      className: "Form-group"
-    }, m("label", null, "S\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng"), m("input", {
-      className: "FormControl",
-      type: "text",
-      placeholder: "Nh\u1EADp s\u1ED1 t\xE0i kho\u1EA3n ng\xE2n h\xE0ng",
-      value: this.bankAccountNumber,
-      oninput: function oninput(e) {
-        _this.bankAccountNumber = e.target.value;
-      }
-    })), m("div", {
-      className: "Form-group"
-    }, m("label", null, "T\xEAn ng\xE2n h\xE0ng"), m("input", {
-      className: "FormControl",
-      type: "text",
-      placeholder: "Nh\u1EADp t\xEAn ng\xE2n h\xE0ng",
-      value: this.bankName,
-      oninput: function oninput(e) {
-        _this.bankName = e.target.value;
-      }
-    })), m("div", {
-      className: "Form-group"
-    }, m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
-      className: "Button Button--primary",
-      type: "submit",
-      loading: this.loading,
-      onclick: function onclick() {
-        _this.onSubmit();
-      }
-    }, "X\xE1c nh\u1EADn"), m((flarum_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
-      className: "Button Button--secondary",
-      onclick: function onclick() {
-        _this.onCancelConfirmed();
-        _this.hide();
-      }
-    }, "H\u1EE7y b\u1ECF")));
-  }
-
-  // Xử lý khi xác nhận yêu cầu rút tiền
-  ;
-  _proto.onSubmit = function onSubmit() {
-    if (this.bankAccountName && this.bankAccountNumber && this.bankName) {
-      // Gửi yêu cầu rút tiền (giả sử bạn có API hoặc logic xử lý tại đây)
-      flarum_app__WEBPACK_IMPORTED_MODULE_2___default().store.createRecord('withdraw-transaction', {
-        bankAccountName: this.bankAccountName,
-        bankAccountNumber: this.bankAccountNumber,
-        bankName: this.bankName,
-        totalAmount: this.totalAmount
-      });
-
-      // Đóng modal sau khi gửi yêu cầu
-      this.hide();
-      alert('Yêu cầu rút tiền đã được gửi.');
-    } else {
-      alert('Vui lòng nhập đầy đủ thông tin!');
-    }
-  }
-
-  // Xử lý khi hủy bỏ
-  ;
-  _proto.onCancelConfirmed = function onCancelConfirmed() {
-    this.bankAccountName = '';
-    this.bankAccountNumber = '';
-    this.bankName = '';
-  };
-  _proto.className = function className() {
-    return 'WithdrawMonneyTransactionModal';
-  };
-  return WithdrawMonneyTransactionModal;
 }((flarum_components_Modal__WEBPACK_IMPORTED_MODULE_1___default()));
 
 

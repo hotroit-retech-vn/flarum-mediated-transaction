@@ -66,8 +66,6 @@ class CreateTransactionController extends AbstractCreateController
             $errorMessage = $th;
         }
 
-
-
         if ($errorMessage !== "") {
             throw new ValidationException(['message' => $errorMessage]);
         }
